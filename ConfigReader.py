@@ -9,16 +9,16 @@ class ConfigReader:
 		self.leggi(file_configurazione)
 	
 	
-	def leggi(file_configurazione):
+	def leggi(self, file_configurazione):
 		with open(file_configurazione, 'r') as f:
 			intestazione=f.readline().split("\t")
-			reader.versione=intestazione[0]
+			self.versione=intestazione[0]
 		
 			for line in f:
 				lista=line.split("\t")
 				if lista[0].lower()=='x':
 					tupla=tuple([lista[1]]+[lista[2]])
-					self.addFeature(tupla, completo)
+					self.addFeature(tupla)
 	
 	
 	def addFeature(self, stringa):

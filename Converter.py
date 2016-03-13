@@ -8,11 +8,21 @@ class Converter:
 	def __init__ (self):
 		pass
 
-	def converti_corpus_to_token_target (corpus, dizionario_filtro, dizionario_frequenze, frequenze_cumulate, massimafreq):
+	def converti_corpus_to_token_target (self, corpus, frequenze_standard):
+		dizionario_filtro = corpus.dizionario_frequenze
+		dizionario_frequenze = frequenze_standard.dizionario_frequenze
+		frequenze_cumulate = frequenze_standard.dizionario_cumulato
+		massimafreq = frequenze_standard.massima_frequenza
+
 		ret = []
-		TT.Token_target.set_dizionario_filtro (dizionario_filtro)
+		#TT.Token_target.set_dizionario_filtro (dizionario_filtro)
+		TT.Token_target.dizionario_filtro = dizionario_filtro
+		#~ print "DEBUG"
+		#~ print TT.Token_target.dizionario_filtro
+		#~ m = raw_input ()
 		for n, doc in corpus.documenti.items ():
-			for m, frase in doc.items():
+			m=0
+			for frase in doc:
 				quotes = False
 				for k, tok in frase.tokens.items ():
 					if tok.form == '"':
@@ -21,17 +31,20 @@ class Converter:
 						quotes = True
 					elif tok.form == '»':
 						quotes = False
-					tt = TT.Token_target (tok, frase)
-					tt.fId (k, m, n)
-					tt.fWithinQuotes (quotes)
-					tt.fFrequenzaLemmaPoS (tok.lemma, dizionario_frequenze)
-					tt.fFrequenzaLemmaPoS_log (tok.lemma, dizionario_frequenze)
-					tt.fFrequenzaRelativaLemmaPoS (tok.lemma, 0.1, dizionario_frequenze, frequenze_cumulate, massimafreq)
-					ret.append (tt)
+					if tok.CPoS == 'S':
+						tt = TT.Token_target (tok, frase)
+						tt.fId (n, m, k)
+						tt.fWithinQuotes (quotes)
+						tt.fFrequenzaLemmaPoS (tok.lemma, dizionario_frequenze)
+						tt.fFrequenzaLemmaPoS_log (tok.lemma, dizionario_frequenze)
+						tt.fFrequenzaRelativaLemmaPoS (tok.lemma, 0.1, dizionario_frequenze, frequenze_cumulate, massimafreq)
+						ret.append (tt)
+				m+=1
 		self.set_liste_possibili_valori ()
 		return ret
 	
 	def set_liste_possibili_valori (self):
+		self.lista_di_tutti_i_possibili = {}
 		self.lista_di_tutti_i_possibili ["lemmi"] = TT.Token_target.hasher_lemmas.dizionario_hash.values() + [ "M" ]
 		self.lista_di_tutti_i_possibili ["forme"] = TT.Token_target.hasher_forms.dizionario_hash.values() + [ "M" ]
 		self.lista_di_tutti_i_possibili ["morfologia_genere"] = ["m", "f", "n", "missing"]
@@ -48,4 +61,4 @@ class Converter:
 		self.lista_di_tutti_i_possibili ["Pos_sostantivi"] = ["S", "SP", "SW", "SA", "M" ]
 		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_antidipendenze.dizionario_hash.values() + [ "M" ]
 		self.lista_di_tutti_i_possibili ["preposizioni"] = TT.Token_target.hasher_preposizioni.dizionario_hash.values() + [ "M" ]
-		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_dipendenze.dizionario_hash.values() + [ "M" ]
+		self.lista_di_tutti_i_possibili ["lemmi_dipendenze"] = TT.Token_target.hasher_lemmi_dipendenze.dizionario_hash.values() + [ "M" ]

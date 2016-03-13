@@ -4,12 +4,14 @@
 import Frase as F
 
 
+debug=open("../debug_documenti", "w")
+
 class Corpus:
 	"""
 	Si occupa di parsare il corpus a partire dal file di input e aggiornare i token con l'informazione relativa alle dipendenze sintattiche.
 	"""
 	
-	def __init__(self, file_corpus, pattern, test=0):
+	def __init__(self, file_corpus, pattern, mappa_cluster, test=0):
 		"""
 			Inizializza un oggetto di classe corpus.
 	
@@ -19,8 +21,12 @@ class Corpus:
 		self.documenti={}
 		
 		self.leggi(file_corpus)
+	
+		#~ print vars (F.Frase)
+		#~ print vars (F)
+		self.dizionario_frequenze = F.T.Token.frequenze_lemmi
 		
-		self.aggiorna_pattern(pattern, test)
+		self.aggiorna_pattern(pattern, mappa_cluster, test)
 		
 
 	def leggi (self, file_corpus):
@@ -56,6 +62,7 @@ class Corpus:
 						d=int(line.split('"')[1])
 						self.documenti[d]=[]
 						fr=-1
+						#~ print "[Corpus] leggo doc",d
 				else:
 					if not dentro_frase:
 						if line[0:2]=='<s' and "ins=\"no\"" in line:
@@ -78,7 +85,7 @@ class Corpus:
 
 
 
-	def aggiorna_pattern(self, pattern, test=0):
+	def aggiorna_pattern(self, pattern, mappa_cluster, test=0):
 		"""
 			Aggiorna i token con l'informazione relativa al parsing sintattico.
 			
@@ -89,6 +96,7 @@ class Corpus:
 			
 		"""
 		patterns=pattern.records.items()
+		cluster = mappa_cluster.mappa
 		if test:
 			patterns=pattern.records_test.items()
 		
@@ -98,15 +106,15 @@ class Corpus:
 				
 				frase = self.documenti[k[0]][k[1]-1]
 				
-				t.fModAdj(p.modAdj_pre.lista, p.modAdj_post.lista)
-				t.fModNum (p.modNum)
-				t.fDet(p.det_def, p.det_indef)
-				t.fAntiDip (p.antidip)
-				t.fDip (p.dip)					
-				t.fCoDip (p.codip)
-			except:
-				print "[parser_corpus] impossibile trovare il token: doc",str(k[0]),"frase",str(k[1]),"token",str(k[2]),"---",str(k[3])
+				target.fModAdj(p.modAdj_pre.lista, p.modAdj_post.lista, cluster)
+				target.fModNum (p.modNum)
+				target.fDet(p.det_def, p.det_indef)
+				target.fAntiDip (p.antidip)
+				target.fDip (p.dip)					
+				target.fCoDip (p.codip)
+			except (IndexError, KeyError):
+				#~ print "[parser_corpus] impossibile trovare il token: doc",str(k[0]),"frase",str(k[1]),"token",str(k[2]),"---",str(k[3])
 				
-				#~ debug.write("[parser_corpus] impossibile trovare il token doc "+str(k[0])+" frase "+str(k[1])+" token "+str(k[2])+" "+str(k[3])+"\n")
+				debug.write("impossibile trovare il token doc "+str(k[0])+" frase "+str(k[1])+" token "+str(k[2])+" "+str(k[3])+"\n")
 		
 		

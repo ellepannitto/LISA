@@ -7,7 +7,6 @@ class Token:
 	Memorizza 
 	"""
 	
-	
 	frequenze_lemmi={}
 	
 	def aggiorna_frequenze(self):
@@ -22,8 +21,8 @@ class Token:
 		
 		self.posizione=int(lista[0])
 				
-		self.form=lista[2]
-		self.lemma=lista[3]
+		self.form=lista[1]
+		self.lemma=lista[2]
 		
 		self.aggiorna_frequenze()
 		
@@ -58,7 +57,7 @@ class Token:
 			self.ModAdj_lemmi_pre.add(lemma)
 			
 			if lemma in mappa_cluster:
-				lista=mappa[lemma]
+				lista=mappa_cluster[lemma]
 				for c in lista:
 					self.ModAdj_cluster_pre.add(str(c))
 		
@@ -66,7 +65,7 @@ class Token:
 			self.ModAdj_lemmi_post.add(lemma)
 			
 			if lemma in mappa_cluster:
-				lista=mappa[lemma]
+				lista=mappa_cluster[lemma]
 				for c in lista:
 					self.ModAdj_cluster_post.add(str(c))
 
@@ -81,16 +80,19 @@ class Token:
 	def fAntiDip (self, lista_antidip):
 		#IPOTESI: len(lista_antidip)=1 per ogni token
 		#Controllare		
-		el=lista_antidip[0]
-		self.AntiDip['tipo']=el.tipo
-		self.AntiDip['lemma']=el.lemmi[0]
-		self.AntiDip['PoS']=el.PoS_testa.upper()
-		self.AntiDip['preposizione']=el.preposizione
-		self.AntiDip['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
+		if len(lista_antidip)>0:
+			el=lista_antidip[0]
+			self.AntiDip['tipo']=el.tipo
+			self.AntiDip['lemma']=el.lemmi[0]
+			self.AntiDip['PoS']=el.PoS_testa.upper()
+			self.AntiDip['preposizione']=el.preposizione
+			self.AntiDip['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
 		
-		self.AntiDip['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
-		
-		
+			self.AntiDip['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+		else:
+			#print "aveva ragione Ludovica !!! <3 beccato un baco malefico"
+			pass
+			
 	def fDip (self, lista_dip):
 		
 		for el in lista_dip:
@@ -98,7 +100,7 @@ class Token:
 			
 			self.Dip[el.tipo]['lemmi']=el.lemmi
 			self.Dip[el.tipo]['PoS']=el.PoS.keys()
-			self.Dip[el.tipo]['preposizione']=el.preposizione
+			self.Dip[el.tipo]['preposizioni']=el.preposizione
 			self.Dip[el.tipo]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
 
 		
@@ -108,7 +110,7 @@ class Token:
 			
 			self.CoDip[el.tipo]['lemmi']=el.lemmi
 			self.CoDip[el.tipo]['PoS']=el.PoS.keys()
-			self.CoDip[el.tipo]['preposizione']=el.preposizione
+			self.CoDip[el.tipo]['preposizioni']=el.preposizione
 			self.CoDip[el.tipo]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
 
 

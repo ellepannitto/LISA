@@ -2,7 +2,8 @@
 #coding: utf-8 
  
 import sys
-import hasher as H
+import math
+import Hasher as H
 
 _LIMITE_INFERIORE_FREQUENZE = 5
 """
@@ -25,15 +26,15 @@ class Token_target:
 	 dove XXX è il nome della feature. Si noti che non tutte le feature sono supportate
 	"""
 	dizionario_filtro = None;
-	hasher_forms = Hasher ();
-	hasher_lemmas = Hasher ();
-	hasher_dipendenze = Hasher ();
-	hasher_lemmi_dipendenze = Hasher ();
-	hasher_aggettivi = Hasher ();
-	hasher_cluster = Hasher ();
-	hasher_antidipendenze = Hasher ();
-	hasher_lemmi_antidipendenze = Hasher ();
-	hasher_preposizioni = Hasher();
+	hasher_forms = H.Hasher ();
+	hasher_lemmas = H.Hasher ();
+	hasher_dipendenze = H.Hasher ();
+	hasher_lemmi_dipendenze = H.Hasher ();
+	hasher_aggettivi = H.Hasher ();
+	hasher_cluster = H.Hasher ();
+	hasher_antidipendenze = H.Hasher ();
+	hasher_lemmi_antidipendenze = H.Hasher ();
+	hasher_preposizioni = H.Hasher();
 	
 	def set_dizionario_filtro (diz):
 		if Token_target.dizionario_filtro is not None:
@@ -54,11 +55,11 @@ class Token_target:
 			form = tok.form
 			lemma = tok.lemma
 			self.fForm ( form )
-			self.fLemma ( lemma, tok.pos )
+			self.fLemma ( lemma, tok.PoS )
 			self.fMorfologia_genere ( tok.morfologia )
 			self.fMorfologia_numero ( tok.morfologia )
-			self.fPos ( tok.pos )
-			self.fCpos ( tok.cpos )
+			self.fPoS ( tok.PoS )
+			self.fCPoS ( tok.CPoS )
 			self.fFirstWordCap ( form, tok.posizione )
 			self.fFirstWordNoCap ( form, tok.posizione )
 			self.fHyphen ( form )
@@ -67,7 +68,7 @@ class Token_target:
 			self.fContainsPunct ( form )
 			self.fUpper ( form )
 			self.fWordShape ( )
-			self.fFirstWord ( form, tok.posizione )
+			self.fFirstWord ( tok.posizione )
 			self.fModAdj_pre_n  ( tok )	
 			self.fModAdj_post_n ( tok )
 			self.fModAdj_n ( )
@@ -90,10 +91,10 @@ class Token_target:
 			self.fAntiDip_classe_associazione ( tok )
 			self.fPresenzaDip ( tok )
 			self.fDip_n ( tok )
-			self.fDip_b ( tok )
+			self.fDip_b ()
 			self.fPresenzaCoDip ( tok ) 
 			self.fCoDip_n ( tok )
-			self.fCoDip_b ( tok )
+			self.fCoDip_b ()
 			self.fDip_PoS ( tok )
 			self.fDip_preposizioni ( tok ) 
 			self.fCoDip_PoS ( tok )
@@ -117,12 +118,12 @@ class Token_target:
 		self.fCapNext (posizione, frase)
 		self.fCapPrev (posizione, frase)
 
-	def fId (self, posizione, frase, documento):
-		self.id = str(posizione) + str (frase) + str (documento)
+	def fId (self, documento, frase, posizione):
+		self.id = 'd' + str(documento) + 's' + str (frase) + 't' + str (posizione)
 		return self.id
 	
 	def fForm (self, form):
-		self.form = Token_target.hash_forms.hash (form)
+		self.form = Token_target.hasher_forms.hash (form)
 		return self.form
 	
 	def fLemma (self, lemma, pos):
@@ -136,19 +137,25 @@ class Token_target:
 		self.lemma = Token_target.hasher_lemmas.hash (lemma)
 
 	def fMorfologia_genere ( self, morfologia ):
-		assert "gen" in morfologia "[Token_target] ERROR: found token with no 'gen' in morfologia"
-		self.morfologia_genere = morfologia["gen"]
+		#~ assert "gen" in morfologia, "[Token_target] ERROR: found token with no 'gen' in morfologia"
+		if "gen" in morfologia:
+			self.morfologia_genere = morfologia["gen"]
+		else:
+			self.morfologia_genere = "missing"
 		
 		
 	def fMorfologia_numero ( self, morfologia ):
-		assert "num" in morfologia, "[Token_target] ERROR: found token with no 'num' in morfologia"
-		self.morfologia_numero = morfologia["num"]
+		#~ assert "num" in morfologia, "[Token_target] ERROR: found token with no 'num' in morfologia"
+		if "num" in morfologia:
+			self.morfologia_numero = morfologia["num"]
+		else:
+			self.morfologia_numero = "missing"
 	
-	def fPos (self, pos):
-		self.pos = pos
+	def fPoS (self, pos):
+		self.PoS = pos
 
-	def fCpos (self, cpos):
-		self.cpos = cpos
+	def fCPoS (self, cpos):
+		self.CPoS = cpos
 	
 	def fFirstWordCap(self, form, posizione):
 		self.FirstWordCap= 1 if (posizione==1 and form.istitle()) else 0
@@ -217,7 +224,7 @@ class Token_target:
 		return self.Upper
 
 	def fWordShape(self):
-		ret=self.fContainsDigit() or self.fContainsPunct() or self.fUpper()
+		ret=self.ContainsDigit or self.ContainsPunct or self.Upper
 		self.WordShape=ret
 		return self.WordShape
 
@@ -291,7 +298,7 @@ class Token_target:
 		return self.ModAdj_post_n
 		
 	def fModAdj_n (self):
-		self.ModAdj_n = self.ModAdj_post_n + ModAdj_pre_n
+		self.ModAdj_n = self.ModAdj_post_n + self.ModAdj_pre_n
 		return self.ModAdj_n
 
 	def fModAdj_pre_b (self):
@@ -331,7 +338,7 @@ class Token_target:
 		return ret
 	
 	def fModAdj_clusters (self, tok):
-		ret = []
+		ret = {}
 		for num in tok.ModAdj_cluster_pre:
 			ret[Token_target.hasher_cluster.hash (num)] = 1
 		for num in tok.ModAdj_cluster_post:
@@ -340,7 +347,7 @@ class Token_target:
 		return ret
 	
 	def fModNum (self, tok):
-		self.ModNum = 1 if tok.ModNum else 0
+		self.ModNum = 1 if tok.modNum else 0
 		return self.ModNum
 	
 	def fDet_def (self, tok):
@@ -408,7 +415,7 @@ class Token_target:
 	def fDip_n(self, tok):
 		h={}
 		for el in tok.Dip:
-			h[Token.hasher_dipendenze.hash(el)]=len(tok.Dip[el]['lemmi'])
+			h[Token_target.hasher_dipendenze.hash(el)]=len(tok.Dip[el]['lemmi'])
 		self.Dip_n=h
 		return h
 		
@@ -476,7 +483,7 @@ class Token_target:
 	def fDip_lemmi(self, tok):
 		h={}
 		for el in tok.Dip:
-			lista=tok.Dip['lemmi']
+			lista=tok.Dip[el]['lemmi']
 			for l in lista:
 				h[Token_target.hasher_lemmi_dipendenze.hash(l)]=1
 		self.Dip_lemmi=h
@@ -485,14 +492,18 @@ class Token_target:
 	def fDip_classes(self, tok):
 		h={}
 		for el in tok.Dip:
-			h[Token_target.hasher_dipendenze.hash(el)]['classes']=tok.Dip[el]['classes']
+			el_hashed=Token_target.hasher_dipendenze.hash(el)
+			h[el_hashed]={}
+			h[el_hashed]['classes']=tok.Dip[el]['classes']
 		self.Dip_classes=h
 		return h
 	
 	def fCoDip_classes(self, tok):
 		h={}
 		for el in tok.CoDip:
-			h[Token_target.hasher_dipendenze.hash(el)]['classes']=tok.CoDip[el]['classes']
+			el_hashed=Token_target.hasher_dipendenze.hash(el)
+			h[el_hashed]={}
+			h[el_hashed]['classes']=tok.CoDip[el]['classes']
 		self.CoDip_classes=h
 		return h
 					

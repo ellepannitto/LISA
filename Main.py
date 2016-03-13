@@ -10,6 +10,8 @@ import AssociazioniFiller as AF
 import AssociazioniClass as AC
 import AdjectiveCluster as JC
 import PatternParser as PP
+import ConfigReader as CR
+import Converter as CVT
 
 import Dumper
 
@@ -54,17 +56,6 @@ class Main:
 	def test_parse (self, modulo, f):
 		return self.opzione [modulo] == Main._PARSE or  ( self.opzione [modulo] == Main._DUMP_OR_PARSE and not os.path.isfile (f) )
 	
-	def perform (self):
-		
-		frequenze_repubblica = self.parse_or_dump ("repubblica",Main._DUMP_REPUBBLICA_STD, lambda: R.Repubblica( Main._PARSE_REPUBBLICA_STD ) )
-		mappa_sensi = self.parse_or_dump ("mappa",Main._DUMP_MAPPA_STD, lambda: MS.MappaSensi( Main._PARSE_MAPPA_STD ) , ["pattern", "corpus"] )
-		associazioni_filler = self.parse_or_dump("depfiller", Main._DUMP_DEPFILLER_STD, lambda: AF.AssociazioniFiller( Main._PARSE_DEPFILLER_STD ), ["pattern", "corpus"] )
-		associazioni_class = self.parse_or_dump("depclass", Main._DUMP_DEPCLASS_STD, lambda: AC.AssociazioniClass( Main._PARSE_DEPCLASS_STD ), ["pattern", "corpus"] )
-		mappa_cluster = self.parse_or_dump("clusters", Main._DUMP_CLUSTERS_STD, lambda: JC.AdjectiveCluster( Main._PARSE_CLUSTERS_STD ) )
-		pattern = self.parse_or_dump("pattern", Main._DUMP_PATTERN_STD, lambda: PP.Pattern ( Main._PARSE_PATTERN_STD, mappa_cluster, associazioni_class, associazioni_filler ), ["corpus"] )
-		corpus = self.parse_or_dump("corpus", Main._DUMP_CORPUS_STD, lambda: C.Corpus( Main._PARSE_CORPUS_STD, pattern ) )
-		features = self.parse_or_dump("features", Main._DUMP_FEATURES_STD, lambda: CR.ConfigReader( Main._PARSE_FEATURES_STD ) )
-		
 		
 	def parse_or_dump (self, modulo, file_dump, fun_parse, lista_moduli_dipendenti=[]):
 		if self.test_parse (modulo, file_dump): 
@@ -78,7 +69,26 @@ class Main:
 			ret = Dumper.binary_load (file_dump)
 		print '[main] letto', modulo
 		return ret
+	
+	def perform (self):
 		
+		frequenze_repubblica = self.parse_or_dump ("repubblica",Main._DUMP_REPUBBLICA_STD, lambda: R.Repubblica( Main._PARSE_REPUBBLICA_STD ) )
+		mappa_sensi = self.parse_or_dump ("mappa",Main._DUMP_MAPPA_STD, lambda: MS.MappaSensi( Main._PARSE_MAPPA_STD ) , ["pattern", "corpus"] )
+		associazioni_filler = self.parse_or_dump("depfiller", Main._DUMP_DEPFILLER_STD, lambda: AF.AssociazioniFiller( Main._PARSE_DEPFILLER_STD ), ["pattern", "corpus"] )
+		associazioni_class = self.parse_or_dump("depclass", Main._DUMP_DEPCLASS_STD, lambda: AC.AssociazioniClass( Main._PARSE_DEPCLASS_STD ), ["pattern", "corpus"] )
+		mappa_cluster = self.parse_or_dump("clusters", Main._DUMP_CLUSTERS_STD, lambda: JC.AdjectiveCluster( Main._PARSE_CLUSTERS_STD ) )
+		pattern = self.parse_or_dump("pattern", Main._DUMP_PATTERN_STD, lambda: PP.Pattern ( Main._PARSE_PATTERN_STD, mappa_cluster, associazioni_class, associazioni_filler ), ["corpus"] )
+		corpus = self.parse_or_dump("corpus", Main._DUMP_CORPUS_STD, lambda: C.Corpus( Main._PARSE_CORPUS_STD, pattern, mappa_cluster ) )
+		features = self.parse_or_dump("features", Main._DUMP_FEATURES_STD, lambda: CR.ConfigReader( Main._PARSE_FEATURES_STD ) )
+		
+		converter = CVT.Converter()
+		
+		lista_da_stampare = converter.converti_corpus_to_token_target( corpus, frequenze_repubblica )
+		
+		for tt in lista_da_stampare:
+			print tt.id, tt.lemma
+		
+		print converter.lista_di_tutti_i_possibili
 		
 
 if __name__ == "__main__":
