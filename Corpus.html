@@ -1,0 +1,60 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Corpus</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Corpus</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/ludovica/Scrivania/tirocinio/estrazione_features/codice_nuovo/Corpus.py">/home/ludovica/Scrivania/tirocinio/estrazione_features/codice_nuovo/Corpus.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;coding=&nbsp;utf-8</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="Corpus.html#Corpus">Corpus</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Corpus">class <strong>Corpus</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>La&nbsp;classe&nbsp;<a href="#Corpus">Corpus</a>&nbsp;si&nbsp;occupa&nbsp;di&nbsp;parsare&nbsp;il&nbsp;corpus&nbsp;a&nbsp;partire&nbsp;dal&nbsp;file&nbsp;di&nbsp;input&nbsp;<br>
+e&nbsp;aggiornare&nbsp;i&nbsp;token&nbsp;con&nbsp;l'informazione&nbsp;relativa&nbsp;alle&nbsp;dipendenze&nbsp;sintattiche.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Corpus-__init__"><strong>__init__</strong></a>(self, file_corpus)</dt><dd><tt>Inizializza&nbsp;un&nbsp;oggetto&nbsp;di&nbsp;classe&nbsp;corpus.<br>
+&nbsp;<br>
+Parametri:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file_corpus&nbsp;-&gt;&nbsp;file&nbsp;di&nbsp;input&nbsp;da&nbsp;cui&nbsp;leggere&nbsp;il&nbsp;corpus</tt></dd></dl>
+
+<dl><dt><a name="Corpus-aggiorna_pattern"><strong>aggiorna_pattern</strong></a>(self, pattern, test<font color="#909090">=0</font>)</dt><dd><tt>Aggiorna&nbsp;i&nbsp;token&nbsp;con&nbsp;l'informazione&nbsp;relativa&nbsp;al&nbsp;parsing&nbsp;sintattico.<br>
+&nbsp;<br>
+Parametri:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;-&gt;&nbsp;oggetto&nbsp;di&nbsp;classe&nbsp;SelectedPattern<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test&nbsp;-&gt;&nbsp;0&nbsp;se&nbsp;il&nbsp;corpus&nbsp;da&nbsp;aggiornare&nbsp;è&nbsp;il&nbsp;train,&nbsp;1&nbsp;se&nbsp;è&nbsp;il&nbsp;test<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default:0)</tt></dd></dl>
+
+<dl><dt><a name="Corpus-leggi"><strong>leggi</strong></a>(self, file_corpus)</dt><dd><tt>Parsa&nbsp;il&nbsp;corpus.<br>
+&nbsp;<br>
+Parametri:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file_corpus&nbsp;-&gt;&nbsp;file&nbsp;di&nbsp;input&nbsp;nel&nbsp;seguente&nbsp;formato&nbsp;(CoNLL)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;doc&nbsp;id="NUMERO_DOCUMENTO"&nbsp;[ins="no"]&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;s&nbsp;[ins="no"]&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id_token&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;form&nbsp;&nbsp;&nbsp;&nbsp;lemma&nbsp;&nbsp;&nbsp;analisi_morfologica&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CPoS&nbsp;&nbsp;&nbsp;&nbsp;PoS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;posizione_testa&nbsp;dipendenza_sintattica&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/s&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/doc&gt;</tt></dd></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>
