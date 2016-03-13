@@ -10,7 +10,7 @@ class Associazioni:
 		with open(depclass_ass, 'r') as f:
 		f.readline()
 		for line in f:
-			ogg.addDependency(line.split())
+			self.addDependency(line.split())
 	
 	def addDependency(self, lista):
 		chiave=tuple([lista[1].split('_')[0]]+[lista[0].split('-')[0]])
