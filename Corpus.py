@@ -9,7 +9,7 @@ class Corpus:
 	Si occupa di parsare il corpus a partire dal file di input e aggiornare i token con l'informazione relativa alle dipendenze sintattiche.
 	"""
 	
-	def __init__(self, file_corpus):
+	def __init__(self, file_corpus, pattern, test=0):
 		"""
 			Inizializza un oggetto di classe corpus.
 	
@@ -19,6 +19,8 @@ class Corpus:
 		self.documenti={}
 		
 		self.leggi(file_corpus)
+		
+		self.aggiorna_pattern(pattern, test)
 		
 
 	def leggi (self, file_corpus):

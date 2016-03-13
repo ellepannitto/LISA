@@ -11,10 +11,10 @@ class Token:
 	frequenze_lemmi={}
 	
 	def aggiorna_frequenze(self):
-		if self.lemmi in Token.frequenze_lemmi:
-			Token.frequenze_lemmi[self.lemmi]+=1
+		if self.lemma in Token.frequenze_lemmi:
+			Token.frequenze_lemmi[self.lemma]+=1
 		else:
-			Token.frequenze_lemmi[self.lemmi]=1
+			Token.frequenze_lemmi[self.lemma]=1
 	
 	def __init__(self, lista):
 		
@@ -23,7 +23,7 @@ class Token:
 		self.posizione=int(lista[0])
 				
 		self.form=lista[2]
-		self.lemma=lista[3
+		self.lemma=lista[3]
 		
 		self.aggiorna_frequenze()
 		

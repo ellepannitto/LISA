@@ -48,4 +48,4 @@ class Converter:
 		self.lista_di_tutti_i_possibili ["Pos_sostantivi"] = ["S", "SP", "SW", "SA", "M" ]
 		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_antidipendenze.dizionario_hash.values() + [ "M" ]
 		self.lista_di_tutti_i_possibili ["preposizioni"] = TT.Token_target.hasher_preposizioni.dizionario_hash.values() + [ "M" ]
-		
+		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_dipendenze.dizionario_hash.values() + [ "M" ]

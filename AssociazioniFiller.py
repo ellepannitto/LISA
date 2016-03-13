@@ -7,7 +7,7 @@ class AssociazioniFiller:
 		self.leggi(file_associazioni)
 		
 	def leggi(self, file_associazioni):
-		with open(depfiller_ass, 'r') as f:
+		with open(file_associazioni, 'r') as f:
 			f.readline()
 			for line in f:
 				self.addDependency(line.split())

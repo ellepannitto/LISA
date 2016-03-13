@@ -4,11 +4,10 @@
 class MappaSensi:
 	
 	def __init__(self, file_mappa):
+		self.mappa={}
 		self.leggi(file_mappa)
 		
 	def leggi(self, file_mappa):
-		self.mappa={}
-		
 		with open(file_mappa, 'r') as f:
 		
 			for line in f:

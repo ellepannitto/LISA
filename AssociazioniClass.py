@@ -1,16 +1,16 @@
 #!/usr/bin/python
 # coding= utf-8
 
-class Associazioni:
+class AssociazioniClass:
 	def __init__(self, file_associazioni):
 		self.listaAssociazioni={}
 		self.leggi(file_associazioni)
 
 	def leggi(self, file_associazioni):
-		with open(depclass_ass, 'r') as f:
-		f.readline()
-		for line in f:
-			self.addDependency(line.split())
+		with open(file_associazioni, 'r') as f:
+			f.readline()
+			for line in f:
+				self.addDependency(line.split())
 	
 	def addDependency(self, lista):
 		chiave=tuple([lista[1].split('_')[0]]+[lista[0].split('-')[0]])
