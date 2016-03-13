@@ -5,9 +5,25 @@ import sys
 import hasher as H
 
 _LIMITE_INFERIORE_FREQUENZE = 5
+"""
+Alcuni filtri sui lemmi richiedono che la frequenza dello stesso maggiore di questo limite, altrimenti il lemma non è ritenuto significativo e ne viene usato uno fittizio al suo posto
+"""
 
 class Token_target:
+	"""
+	Gli oggetti di classe Token_target memorizzano le informazioni di un singolo token, in un formato tale da poter essere stampato su un file arff
+	 Alcune feature sono estratte dal token letto dal corpus, altre dipendono dal contesto e altre ancora da diversi parametri.
 	
+	I valori di feature o gruppi di feature possono essere recuperate semplicemente leggendo l'attributo corrispondente di un oggetto di classe Token_target.
+	 Per esempio, per recuperare la feature denominata "lemma" è sufficiente usare:
+	     `tt.lemma` oppure tt.__getattr__ ("lemma")
+	 dove tt è un istanza della classe Token_target.
+	 Il valore restituito può essere un intero, una stringa, oppure un dizionario. In quest'ultimo caso, il valore del gruppo di feature è da considerarsi ovunque '0' tranne che per le feature corrispondenti alle chiavi del dizionario
+	
+	Questa classe memorizza inoltre tutti i possibili valori assunti da alcune feature, per recuperarli usare
+	    `Token_target.hasher_XXX.dizionario_hash.values()`
+	 dove XXX è il nome della feature. Si noti che non tutte le feature sono supportate
+	"""
 	dizionario_filtro = None;
 	hasher_forms = Hasher ();
 	hasher_lemmas = Hasher ();
