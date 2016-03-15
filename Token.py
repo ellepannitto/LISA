@@ -4,18 +4,33 @@
 
 class Token:
 	"""
-	Memorizza 
+	Memorizza il singolo token del corpus con le sue proprietà
 	"""
 	
 	frequenze_lemmi={}
 	
 	def aggiorna_frequenze(self):
+		"""
+		Aggiorna le frequenze di ogni lemma nell'attributo della classe frequenze_lemmi
+		"""
 		if self.lemma in Token.frequenze_lemmi:
 			Token.frequenze_lemmi[self.lemma]+=1
 		else:
 			Token.frequenze_lemmi[self.lemma]=1
 	
 	def __init__(self, lista):
+		"""
+		Setta gli attributi di ogni token, nello specifico:
+			posizione -> posizione del token all'interno della frase
+			form -> forma grammaticale del token
+			lemma -> lemma del token
+			CPoS -> Part of Speech Coarse Grained del token
+			PoS -> Part of Speech Fine Grained del token
+			morfologia -> #####
+			pos_testa -> posizione del token da cui dipende il token in esame
+			tipo_dipendenza -> tipo di dipendenza sintattica del token dalla sua testa
+			LSO -> Supersenso da assegnare
+		"""
 		
 		self.reset()
 		
@@ -23,8 +38,6 @@ class Token:
 				
 		self.form=lista[1]
 		self.lemma=lista[2]
-		
-		self.aggiorna_frequenze()
 		
 		self.CPoS=lista[3]
 		self.PoS=lista[4]
@@ -40,8 +53,13 @@ class Token:
 		else:
 			self.LSO="O"
 
+		self.aggiorna_frequenze()
+
 
 	def fMorfologia(self, stringa):
+		"""
+		Parsa la stringa di analisi morfologica restituendo un dizionario del tipo {categoria_morfologica:valore}
+		"""
 		ret={}
 		if not stringa=="_":
 			elementi=stringa.split("|")
@@ -53,6 +71,9 @@ class Token:
 		return ret
 
 	def fModAdj(self, lista_pre, lista_post, mappa_cluster):
+		"""
+	
+		"""
 		for lemma in lista_pre:
 			self.ModAdj_lemmi_pre.add(lemma)
 			
@@ -70,16 +91,20 @@ class Token:
 					self.ModAdj_cluster_post.add(str(c))
 
 	def fModNum(self, modNum):
+		"""
+		"""
 		self.ModNum=modNum
 		
 	def fDet(self, ddef, dindef):
+		"""
+		"""
 		self.Det_def=ddef
 		self.Det_indef=dindef
 
 
 	def fAntiDip (self, lista_antidip):
-		#IPOTESI: len(lista_antidip)=1 per ogni token
-		#Controllare		
+		"""
+		"""
 		if len(lista_antidip)>0:
 			el=lista_antidip[0]
 			self.AntiDip['tipo']=el.tipo
@@ -116,6 +141,9 @@ class Token:
 
 
 	def reset(self):
+		"""
+		
+		"""
 		self.ModAdj_lemmi_pre=set()
 		self.ModAdj_lemmi_post=set()
 		self.ModAdj_cluster_pre=set()

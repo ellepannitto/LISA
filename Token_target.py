@@ -5,7 +5,7 @@ import sys
 import math
 import Hasher as H
 
-_LIMITE_INFERIORE_FREQUENZE = 5
+_LIMITE_INFERIORE_FREQUENZE = 0
 """
 Alcuni filtri sui lemmi richiedono che la frequenza dello stesso maggiore di questo limite, altrimenti il lemma non è ritenuto significativo e ne viene usato uno fittizio al suo posto
 """
@@ -318,6 +318,8 @@ class Token_target:
 		for lemma in tok.ModAdj_lemmi_pre:
 			ret[Token_target.hasher_aggettivi.hash (lemma)] = 1
 		self.ModAdj_lemmi_pre = ret;
+		#~ print tok.ModAdj_lemmi_pre, ret
+		#~ m=raw_input()
 		return ret
 
 	#si potrebbe mettere un filtro, nel caso servisse

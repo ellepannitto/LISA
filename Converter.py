@@ -58,7 +58,7 @@ class Converter:
 		self.lista_di_tutti_i_possibili ["LSO"] = ["ANIMATE", "ABSTRACT", "OBJECT", "EVENT", "LOCATION", "O"] 
 		self.lista_di_tutti_i_possibili ["misure_associazione"] = ["normalizedLL", "scaledLL"]
 		self.lista_di_tutti_i_possibili ["PoS"] = ["FS", "DI", "BN", "DE", "DD", "DR", "FB", "FC", "FF", "DQ", "PR", "PP", "PQ", "NO", "RD", "PC", "PD", "PE", "PI", "RI", "A", "VA", "B", "E", "CC", "EA", "VM", "N", "AP", "S", "T", "V", "CS", "X", "I", "P", "SP", "SW", "SA", "M"]
-		self.lista_di_tutti_i_possibili ["Pos_sostantivi"] = ["S", "SP", "SW", "SA", "M" ]
+		self.lista_di_tutti_i_possibili ["PoS_sostantivi"] = ["S", "SP", "SW", "SA", "M" ]
 		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_antidipendenze.dizionario_hash.values() + [ "M" ]
 		self.lista_di_tutti_i_possibili ["preposizioni"] = TT.Token_target.hasher_preposizioni.dizionario_hash.values() + [ "M" ]
 		self.lista_di_tutti_i_possibili ["lemmi_dipendenze"] = TT.Token_target.hasher_lemmi_dipendenze.dizionario_hash.values() + [ "M" ]

@@ -12,6 +12,8 @@ import AdjectiveCluster as JC
 import PatternParser as PP
 import ConfigReader as CR
 import Converter as CVT
+import TypeResolver as TR
+import ArffPrinter as AP
 
 import Dumper
 
@@ -25,6 +27,7 @@ class Main:
 	_PARSE_CLUSTERS_STD = "../dati/adjClasses/adjs2WNclusters-merged.txt"
 	_PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
+	_PARSE_CONFIGURAZIONE_STD = "../dati/Config/v_01"
 	
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"
 	_DUMP_REPUBBLICA_STD = "../dump/sorted.repubblica.sensitive.lemmasAndPos"
@@ -34,6 +37,7 @@ class Main:
 	_DUMP_CLUSTERS_STD = "../dump/adjs2WNclusters-merged.txt"
 	_DUMP_PATTERN_STD = "../dump/evalita2011.selected.pat.sp"
 	_DUMP_FEATURES_STD = "../dump/lista_features"
+	_DUMP_CONFIGURAZIONE_STD = "../dump/v_01"
 	
 	_PARSE = 1
 	_DUMP = 2
@@ -52,6 +56,7 @@ class Main:
 		self.opzione ["clusters"] = Main._DUMP_OR_PARSE
 		self.opzione ["pattern"] = Main._DUMP_OR_PARSE
 		self.opzione ["features"] = Main._DUMP_OR_PARSE
+		self.opzione ["configurazione"] = Main._DUMP_OR_PARSE
 	
 	def test_parse (self, modulo, f):
 		return self.opzione [modulo] == Main._PARSE or  ( self.opzione [modulo] == Main._DUMP_OR_PARSE and not os.path.isfile (f) )
@@ -79,16 +84,42 @@ class Main:
 		mappa_cluster = self.parse_or_dump("clusters", Main._DUMP_CLUSTERS_STD, lambda: JC.AdjectiveCluster( Main._PARSE_CLUSTERS_STD ) )
 		pattern = self.parse_or_dump("pattern", Main._DUMP_PATTERN_STD, lambda: PP.Pattern ( Main._PARSE_PATTERN_STD, mappa_cluster, associazioni_class, associazioni_filler ), ["corpus"] )
 		corpus = self.parse_or_dump("corpus", Main._DUMP_CORPUS_STD, lambda: C.Corpus( Main._PARSE_CORPUS_STD, pattern, mappa_cluster ) )
+		
 		features = self.parse_or_dump("features", Main._DUMP_FEATURES_STD, lambda: CR.ConfigReader( Main._PARSE_FEATURES_STD ) )
 		
 		converter = CVT.Converter()
-		
 		lista_da_stampare = converter.converti_corpus_to_token_target( corpus, frequenze_repubblica )
 		
-		for tt in lista_da_stampare:
-			print tt.id, tt.lemma
+		#~ print lista_da_stampare
 		
-		print converter.lista_di_tutti_i_possibili
+		type_resolver = TR.Type_resolver ( )
+		TR.Type_resolver.dizionario_possibili_liste = converter.lista_di_tutti_i_possibili
+				
+		#~ lista_features_atomiche = []
+		#~ for tupla in features.features_scelte:
+			#~ nome = tupla[0]
+			#~ tipo = tupla[1]			
+			#~ lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
+		
+		#~ print lista_features_atomiche
+		
+		printer=AP.ArffPrinter()
+		#~ printer.stampaIntestazione(lista_features_atomiche)
+		
+		
+		configurazione = self.parse_or_dump("configurazione", Main._DUMP_CONFIGURAZIONE_STD, lambda: CR.ConfigReader( Main._PARSE_CONFIGURAZIONE_STD ) )
+		lista_features_atomiche = []
+		for tupla in configurazione.features_scelte:
+			nome = tupla[0]
+			tipo = tupla[1]			
+			lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
+		printer.produci_arff(configurazione.versione, lista_features_atomiche, lista_da_stampare)
+		
+
+		#~ for tt in lista_da_stampare:
+			#~ print tt.id, tt.lemma
+		
+		#~ print converter.lista_di_tutti_i_possibili
 		
 
 if __name__ == "__main__":
@@ -100,4 +131,6 @@ if __name__ == "__main__":
 	m.comportamento ("depclass", Main._DUMP_OR_PARSE)
 	m.comportamento ("cluster", Main._DUMP_OR_PARSE)
 	m.comportamento ("pattern", Main._DUMP_OR_PARSE)
+	m.comportamento ("features", Main._DUMP_OR_PARSE)
+	m.comportamento ("configurazione", Main._DUMP_OR_PARSE)
 	m.perform ()
