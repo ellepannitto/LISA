@@ -2,14 +2,24 @@
 # coding= utf-8
 
 class ConfigReader:
+	"""
+	Legge un file di configurazione per capire quali feature vanno stampate (e il tipo corrispondente) e le memorizza
+	"""
 	
 	def __init__(self, file_configurazione):
+		"""
+		Costruttore di default:
+		 memorizza le features leggendole dal file passate come parametro
+		"""
 		self.versione=''
 		self.features_scelte=[]
 		self.leggi(file_configurazione)
 	
 	
 	def leggi(self, file_configurazione):
+		"""
+		Aggiunge alla lista di feature quelle lette dal file passate come parametro
+		"""
 		with open(file_configurazione, 'r') as f:
 			intestazione=f.readline().split("\t")
 			self.versione=intestazione[0]
@@ -21,8 +31,15 @@ class ConfigReader:
 					self.addFeature(tupla)
 	
 	
-	def addFeature(self, stringa):
-		self.features_scelte.append(stringa)
+	def addFeature(self, tupla):
+		"""
+		Aggiunge una singola feature, passata come parametro.
+		 la feature è una tupla (nome,tipo), con nome e tipo stringhe
+		"""
+		self.features_scelte.append(tupla)
 		
-	def printa(self):
+	def dump(self):
+		"""
+		Stampa le lette, utile per il debug
+		"""
 		print vars(self)
