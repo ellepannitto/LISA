@@ -4,9 +4,25 @@
 import sys
 
 class Type_resolver:
+	"""
+	Gli oggetti di questa classe servono per risolvere e memorizzare 
+	
+	Oltre ai tipi di feature di base, quali possono essere `numeric`, `bool` e `class`, sono supportati tipi più complessi, definiti come prodotti cartesiani fra tipi più semplici.
+	 Per esempio, potremmo voler usare come feature di nome FT la presenza o meno di una certa relazione fra il token in esame e qualcuno dei lemmi che compaiono nel corpus.
+	 Per ogni lemma, il fatto che la relazione sia presente o meno può essere espressa con un valore booleano, quindi la feature in questione verrà risolta come un gruppo composto da "una feature booleana per ogni possibile lemma"
+	
+	I tipi complessi sono della forma T1*T2, e vengono risolti da sinistra verso destra.
+	 nell'esempio, FT sarebbe di tipo lemmi*bool, dove `lemmi` è un tipo che assume come valori i possibili lemmi presenti nel corpus
+	 
+	Per funzionare, gli oggetti di questa classe hanno bisogno di una lista di tutti i possibili valori assunti da uno specifico tipo, come la lista di tutti i lemmi presenti nel corpus.
+	 nell'esempio, il gruppo di feature derivate da FT avrà la stessa cardinalità dell'insieme di tutti i possibili lemmi presenti nel corpus
+	"""
 	
 	dizionario_possibili_liste = None
-	
+	"""
+	Il dizionario di possibili liste va settato prima di risolvere i tipi complessi.
+	 ogni elemento ha chiave t e valore v, dove t è il nome del tipo e v la lista di tutti i possibili valori che quel tipo assumerà
+	"""
 	#~ def set_dizionario_possibili_liste (diz):
 		#~ if Type_resolver.dizionario_possibili_liste is not None:
 			#~ Type_resolver.dizionario_possibili_liste = diz
@@ -18,6 +34,9 @@ class Type_resolver:
 			#~ Type_resolver.dizionario_possibili_liste = diz
 	
 	def __init__(self):
+		"""
+		costruttore di default
+		"""
 		self.lista_tipi={}
 		
 	def tipo_to_arff (self, tipo):
