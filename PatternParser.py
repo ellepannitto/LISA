@@ -24,8 +24,20 @@ def creaChiave(stringa):
 	return tupla
 
 class Pattern:
+	"""
+	Memorizza per ogni istanza le dipendenze che il token instaura con altri elementi della frase
+	"""
+	
 	def __init__(self, file_pattern, senses, depfiller, depclass):
+		"""
+		Inizializza un oggetto di classe Pattern.
 		
+		Parametri:
+			file_pattern -> file di input da cui leggere le dipendenze
+			senses -> oggetto di tipo MappaSensi
+			depfiller -> oggetto di tipo AssociazioniFiller
+			depclass -> oggetto di tipo AssociazioniClass
+		"""
 		sense_map=senses.mappa
 		filler_dict=depfiller.listaAssociazioni
 		class_dict=depclass.listaAssociazioni
@@ -37,6 +49,29 @@ class Pattern:
 		
 		
 	def leggi(self, file_pattern, sense_map, filler_dict, class_dict):
+		"""
+		Parsa il file di input.
+		
+		Parametri:
+			file_pattern -> file di input nel seguente formato
+				
+				lemma="[lemma_target]-[CPoS_target]" [lista_dipendenze] doc[numero_documento|[training|test].sentence[numero_sentence].token[numero_token]
+				#####comp_di="amministratore-s" det="def" modnum="yes" doc100|training.sentence1.token5
+				
+			sense_map -> mappa nel seguente formato
+			
+				{lemma: lista_tag_LSO}
+				
+			filler_dict -> mappa nel seguente formato
+				
+				{}
+			
+			class_dict -> mappa nel seguente formato
+			
+				{}
+			
+			
+		"""
 		with open(file_pattern, 'r') as f:
 			for line in f:
 				self.addRecord(line.split(), sense_map, filler_dict, class_dict)
@@ -59,7 +94,8 @@ class Pattern:
 			v.dump()
 			
 class AntiDip:
-	
+	"""
+	"""
 	def __init__ (self, tipo, arg, filler_dict, class_dict, filler): 
 		
 		split_tipo = tipo.split('_')
@@ -146,6 +182,8 @@ class AntiDip:
 		print "preposizione", self.preposizione
 
 class ModAdj:
+	"""
+	"""
 	def __init__ (self, arg=None):
 		self.lista=[]
 		if arg is not None:
@@ -158,6 +196,8 @@ class ModAdj:
 
 
 class Dip:
+	"""
+	"""
 	def __init__ (self, tipo, arg, dizionario):
 		#~ print tipo, arg
 		#~ m=raw_input()
@@ -290,6 +330,8 @@ def print_if_true (stringa, f):
 		m=raw_input()
 
 class Record:
+	"""
+	"""
 	def __init__(self, lista, mappa, filler_dict, class_dict):
 		self.reset ()
 		

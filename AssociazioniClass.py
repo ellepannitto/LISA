@@ -2,7 +2,14 @@
 # coding= utf-8
 
 class AssociazioniClass:
+	"""
+	Memorizza (ma lo farà bene??? ####) la frequenza di associazione in una relazione tra un lemma e una classe LSO
+	"""
+	
 	def __init__(self, file_associazioni):
+		"""
+		Inizializza
+		"""
 		self.listaAssociazioni={}
 		self.leggi(file_associazioni)
 
