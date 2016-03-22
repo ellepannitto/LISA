@@ -9,7 +9,7 @@ class ConfigReader:
 	def __init__(self, file_configurazione):
 		"""
 		Costruttore di default:
-		 memorizza le features leggendole dal file passate come parametro
+			memorizza le features leggendole dal file passate come parametro
 		"""
 		self.versione=''
 		self.features_scelte=[]
@@ -34,7 +34,7 @@ class ConfigReader:
 	def addFeature(self, tupla):
 		"""
 		Aggiunge una singola feature, passata come parametro.
-		 la feature è una tupla (nome,tipo), con nome e tipo stringhe
+			la feature è una tupla (nome,tipo), con nome e tipo stringhe
 		"""
 		self.features_scelte.append(tupla)
 		

@@ -84,11 +84,11 @@ class Token_target:
 			self.fDet_indef ( tok )
 			self.fPresenzaDet ( )
 			self.fAntiDip_tipo ( tok )
-			self.fAntiDip_lemma ( tok )
+			self.fAntiDip_lemmi ( tok )
 			self.fAntiDip_PoS ( tok )
 			self.fAntiDip_preposizione ( tok ) 
-			self.fAntiDip_forza_associazione ( tok )
-			self.fAntiDip_classe_associazione ( tok )
+			self.fAntiDip_forzaassociazioni ( tok )
+			self.fAntiDip_classeassociazioni ( tok )
 			self.fPresenzaDip ( tok )
 			self.fDip_n ( tok )
 			self.fDip_b ()
@@ -96,9 +96,9 @@ class Token_target:
 			self.fCoDip_n ( tok )
 			self.fCoDip_b ()
 			self.fDip_PoS ( tok )
-			self.fDip_preposizioni ( tok ) 
+			self.fDip_preposizione ( tok ) 
 			self.fCoDip_PoS ( tok )
-			self.fCoDip_preposizioni ( tok )
+			self.fCoDip_preposizione ( tok )
 			self.fDip_lemmi ( tok )
 			self.fDip_classes ( tok )
 			self.fCoDip_classes ( tok )
@@ -372,42 +372,43 @@ class Token_target:
 		self.AntiDip_tipo =  h
 		return h
 
-	def fAntiDip_lemma (self, tok):
+	def fAntiDip_lemmi (self, tok):
 		h = 'M'
 		if len(tok.AntiDip)>0:
 			lemma = tok.AntiDip['lemma']
 			h = Token_target.hasher_lemmi_antidipendenze.hash (lemma)
-		self.AntiDip_lemma =  h
+		self.AntiDip_lemmi =  h
 		return h
 
 	def fAntiDip_PoS (self, tok):
 		h = 'M'
 		if len(tok.AntiDip)>0:
 			pos = tok.AntiDip['PoS']
-			h = Token_target.hasher_lemmi_antidipendenze.hash (pos)
-		self.AntiDip_pos =  h
+			h = pos
+		self.AntiDip_PoS =  h
 		return h
 
 	def fAntiDip_preposizione (self, tok):
 		h = 'M'
 		if len(tok.AntiDip)>0:
 			prep = tok.AntiDip['preposizione']
-			h = Token_target.hasher_lemmi_antidipendenze.hash (prep)
+			#~ print prep
+			h = Token_target.hasher_preposizioni.hash (prep)
 		self.AntiDip_preposizione =  h
 		return h
 	
-	def fAntiDip_forza_associazione (self, tok):
+	def fAntiDip_forzaassociazioni (self, tok):
 		h = {}
 		if len(tok.AntiDip)>0:
 			h = tok.AntiDip['forza_associazione']
-		self.AntiDip_forza_associazione =  h
+		self.AntiDip_forzaassociazioni =  h
 		return h
 		
-	def fAntiDip_classe_associazione (self, tok):
+	def fAntiDip_classeassociazioni (self, tok):
 		h = {}
 		if len(tok.AntiDip)>0:
 			h = tok.AntiDip['classe_associazione']
-		self.AntiDip_forza_associazione =  h
+		self.AntiDip_classeassociazioni =  h
 		return h
 
 	def fPresenzaDip(self, tok):
@@ -455,13 +456,14 @@ class Token_target:
 		self.Dip_PoS=h
 		return h
 
-	def fDip_preposizioni(self, tok):
+	def fDip_preposizione(self, tok):
 		h={}
 		for el in tok.Dip:
-			lista=tok.Dip[el]['preposizioni']
-			for p in lista:
-				h[Token_target.hasher_preposizioni.hash(p)]=1
-		self.Dip_preposizioni=h
+			p=tok.Dip[el]['preposizioni']
+			#~ print p
+			#~ for p in lista:
+			h[Token_target.hasher_preposizioni.hash(p)]=1
+		self.Dip_preposizione=h
 		return h
 	
 	def fCoDip_PoS(self, tok):
@@ -473,13 +475,14 @@ class Token_target:
 		self.CoDip_PoS=h
 		return h
 
-	def fCoDip_preposizioni(self, tok):
+	def fCoDip_preposizione(self, tok):
 		h={}
 		for el in tok.CoDip:
-			lista=tok.CoDip[el]['preposizioni']
-			for p in lista:
-				h[Token_target.hasher_preposizioni.hash(p)]=1
-		self.CoDip_preposizioni=h
+			p=tok.CoDip[el]['preposizioni']
+			#~ print p
+			#~ for p in lista:
+			h[Token_target.hasher_preposizioni.hash(p)]=1
+		self.CoDip_preposizione=h
 		return h
 		
 	def fDip_lemmi(self, tok):

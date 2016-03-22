@@ -98,7 +98,7 @@ class AntiDip:
 	"""
 	def __init__ (self, tipo, arg, filler_dict, class_dict, filler): 
 		
-		split_tipo = tipo.split('_')
+		split_tipo = tipo.split('_', 1)
 		self.tipo = split_tipo[0]
 		self.PoS_testa = arg[0].split('-')[-1]
 		#~ print self.PoS_testa
@@ -202,7 +202,9 @@ class Dip:
 		#~ print tipo, arg
 		#~ m=raw_input()
 		
-		split_tipo = tipo.split('_')
+		split_tipo = tipo.split('_',1)
+		#~ print split_tipo
+		#~ m=raw_input()
 		
 		self.n=len(arg)
 		self.tipo=split_tipo[0]

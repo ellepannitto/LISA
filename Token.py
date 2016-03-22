@@ -118,6 +118,8 @@ class Token:
 			#print "aveva ragione Ludovica !!! <3 beccato un baco malefico"
 			pass
 			
+			
+	#errore
 	def fDip (self, lista_dip):
 		
 		for el in lista_dip:

@@ -27,7 +27,9 @@ class Main:
 	_PARSE_CLUSTERS_STD = "../dati/adjClasses/adjs2WNclusters-merged.txt"
 	_PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
-	_PARSE_CONFIGURAZIONE_STD = "../dati/Config/v_01"
+	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
+	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
+	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_06"]
 	
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"
 	_DUMP_REPUBBLICA_STD = "../dump/sorted.repubblica.sensitive.lemmasAndPos"
@@ -103,17 +105,22 @@ class Main:
 		
 		#~ print lista_features_atomiche
 		
-		printer=AP.ArffPrinter()
 		#~ printer.stampaIntestazione(lista_features_atomiche)
 		
-		
-		configurazione = self.parse_or_dump("configurazione", Main._DUMP_CONFIGURAZIONE_STD, lambda: CR.ConfigReader( Main._PARSE_CONFIGURAZIONE_STD ) )
-		lista_features_atomiche = []
-		for tupla in configurazione.features_scelte:
-			nome = tupla[0]
-			tipo = tupla[1]			
-			lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
-		printer.produci_arff(configurazione.versione, lista_features_atomiche, lista_da_stampare)
+		for file_configurazione in Main._PARSE_CONFIGURAZIONI_STD:
+			
+			#~ configurazione = self.parse_or_dump("configurazione", Main._DUMP_CONFIGURAZIONE_STD, lambda: CR.ConfigReader( Main._PARSE_CONFIGURAZIONE_STD ) )
+			
+			configurazione=CR.ConfigReader(file_configurazione)
+			printer=AP.ArffPrinter(configurazione.versione)
+			
+			lista_features_atomiche = []
+			for tupla in configurazione.features_scelte:
+				nome = tupla[0]
+				tipo = tupla[1]			
+				lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
+			
+			printer.produci_arff(configurazione.versione, lista_features_atomiche, lista_da_stampare)
 		
 
 		#~ for tt in lista_da_stampare:
