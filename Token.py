@@ -114,10 +114,13 @@ class Token:
 			self.AntiDip['lemma']=el.lemmi[0]
 			self.AntiDip['PoS']=el.PoS_testa.upper()
 			self.AntiDip['preposizione']=el.preposizione
-			print vars(lista_antidip[0])
-			m=raw_input()
+			
+			
 			self.AntiDip['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
-		
+			print "[TOKEN] debug forza_associazione:"
+			print self.lemma, self.Antidip['forza_associazione']
+			m = raw_input ();
+			
 			self.AntiDip['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
 		else:
 			#print "aveva ragione Ludovica !!! <3 beccato un baco malefico"
