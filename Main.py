@@ -20,15 +20,18 @@ import Dumper
 class Main:
 		
 	_PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
+	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_testing"
 	_PARSE_REPUBBLICA_STD = "../dati/repubblicaFreqs/sorted.repubblica.sensitive.lemmasAndPos"
 	_PARSE_MAPPA_STD = "../dati/Mapping/fillers2LSO-merged.map"
 	_PARSE_DEPFILLER_STD = "../dati/Patterns/evalita2011.lemmaDepFiller.ass"
 	_PARSE_DEPCLASS_STD = "../dati/Patterns/evalita2011.lemmaDepClass.freqs"
 	_PARSE_CLUSTERS_STD = "../dati/adjClasses/adjs2WNclusters-merged.txt"
 	_PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
+	#~ _PARSE_PATTERN_STD = "../dati/Patterns/primo_documento.sp"
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
-	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
+	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
+	_PARSE_CONFIGURAZIONI_STD = [ "../dati/Config/test/t_antidip", "../dati/Config/test/t_associazioni_testa", "../dati/Config/test/t_codip", "../dati/Config/test/t_dip", "../dati/Config/test/t_diplemmi", "../dati/Config/test/t_distribuzionali", "../dati/Config/test/t_lso", "../dati/Config/test/t_modadj", "../dati/Config/test/t_morfologia", "../dati/Config/test/t_NER_e_filtri", "../dati/Config/test/t_PoS"]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_06"]
 	
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"
@@ -131,13 +134,13 @@ class Main:
 
 if __name__ == "__main__":
 	m = Main ()
-	m.comportamento ("corpus", Main._DUMP_OR_PARSE)
-	m.comportamento ("repubblica", Main._DUMP_OR_PARSE)
-	m.comportamento ("mappa", Main._DUMP_OR_PARSE)
-	m.comportamento ("depfiller", Main._DUMP_OR_PARSE)
-	m.comportamento ("depclass", Main._DUMP_OR_PARSE)
-	m.comportamento ("cluster", Main._DUMP_OR_PARSE)
-	m.comportamento ("pattern", Main._DUMP_OR_PARSE)
-	m.comportamento ("features", Main._DUMP_OR_PARSE)
-	m.comportamento ("configurazione", Main._DUMP_OR_PARSE)
+	m.comportamento ("corpus", Main._PARSE)
+	m.comportamento ("repubblica", Main._PARSE)
+	m.comportamento ("mappa", Main._PARSE)
+	m.comportamento ("depfiller", Main._PARSE)
+	m.comportamento ("depclass", Main._PARSE)
+	m.comportamento ("cluster", Main._PARSE)
+	m.comportamento ("pattern", Main._PARSE)
+	m.comportamento ("features", Main._PARSE)
+	m.comportamento ("configurazione", Main._PARSE)
 	m.perform ()

@@ -32,6 +32,7 @@ class AssociazioniClass:
 			self.listaAssociazioni[chiave]=[]
 		self.listaAssociazioni[chiave].append(Dependency(lista))
 		
+		
 class Dependency:
 	"""
 	Memorizza informazioni riguardo a una dipendenza fra token.
@@ -48,7 +49,7 @@ class Dependency:
 		"""
 		split_tipo=lista[1].split('_')
 		self.tipo=split_tipo[0]
-		self.preposizone=split_tipo[1] if len(split_tipo) >1 else 'X'
+		self.preposizione=split_tipo[1] if len(split_tipo) >1 else 'X'
 		
 		ascendente=lista[0].split('-')
 		self.lemma_ascendente=ascendente[0]
@@ -58,3 +59,6 @@ class Dependency:
 		
 		self.frequenza=float(lista[3])
 		self.frequenza_relativa=float(lista[4])
+		
+		#print "[Associazioni Class]nuovo elemento aggiunto:", self.tipo, self.preposizione, self.lemma_ascendente, self.PoS_ascendente, self.LSO, self.frequenza
+		#m = raw_input ()

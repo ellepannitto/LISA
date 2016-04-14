@@ -17,7 +17,10 @@ class AssociazioniFiller:
 		lemma=lista[2].split('-')[0]
 		chiave=tuple([lemma]+[lista[1].split('_')[0]]+[lista[0].split('-')[0]])
 		
-		self.listaAssociazioni[chiave]=Dependency(lista)
+		d = Dependency(lista)
+		self.listaAssociazioni[chiave] = d
+		#~ print "[Associazioni Filler] aggiunto nuovo elemento:", chiave, "=>", d.lemma_dipendente, d.PoS_dipendente, d.frequenza_relativa, d.log_likelihood, d.normalizedLL, d.scaledLL, d.ranking
+		#~ m = raw_input ()
 		
 		
 class Dependency:

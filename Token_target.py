@@ -51,6 +51,9 @@ class Token_target:
 		self.from_frase (tok.posizione, frase)
 	
 	def from_token (self, tok):
+		"""
+		Calcola le feature che dipendono esclusivamente dal token in esame
+		"""
 		if Token_target.dizionario_filtro is not None:
 			form = tok.form
 			lemma = tok.lemma
@@ -110,6 +113,10 @@ class Token_target:
 			sys.exit ()
 	
 	def from_frase (self, posizione, frase):
+		"""
+		Calcola le feature che dipendono dalla frase in cui il token si trova
+		"""
+		
 		self.fPoSPrev (posizione, frase)
 		self.fPoSNext (posizione, frase)
 		self.fCPoSPrev (posizione, frase)
@@ -119,7 +126,11 @@ class Token_target:
 		self.fCapPrev (posizione, frase)
 
 	def fId (self, documento, frase, posizione):
-		self.id = 'd' + str(documento) + 's' + str (frase) + 't' + str (posizione)
+		"""
+		Calcola un id univoco da attribuire a ogni token nella forma 
+			d[numero_documento].s[numero_frase].t[numero_token]
+		"""
+		self.id = 'd' + str(documento) + '.s' + str (frase) + '.t' + str (posizione)
 		return self.id
 	
 	def fForm (self, form):
@@ -349,7 +360,10 @@ class Token_target:
 		return ret
 	
 	def fModNum (self, tok):
-		self.ModNum = 1 if tok.modNum else 0
+		self.ModNum = 1 if tok.ModNum else 0
+		#~ print tok.ModNum, self.ModNum
+		#~ print tok.form, tok.lemma
+		#~ m=raw_input()
 		return self.ModNum
 	
 	def fDet_def (self, tok):
@@ -399,8 +413,16 @@ class Token_target:
 	
 	def fAntiDip_forzaassociazioni (self, tok):
 		h = {}
+		c=False
 		if len(tok.AntiDip)>0:
 			h = tok.AntiDip['forza_associazione']
+			for k,m in tok.AntiDip['forza_associazione'].items():
+				if m>0:
+					c=True
+		if c:
+			print tok.AntiDip
+			print h
+			m=raw_input()
 		self.AntiDip_forzaassociazioni =  h
 		return h
 		
@@ -413,12 +435,20 @@ class Token_target:
 
 	def fPresenzaDip(self, tok):
 		self.PresenzaDip=1 if len(tok.Dip)>0 else 0
+		
 		return self.PresenzaDip
 		
 	def fDip_n(self, tok):
 		h={}
 		for el in tok.Dip:
-			h[Token_target.hasher_dipendenze.hash(el)]=len(tok.Dip[el]['lemmi'])
+			hashed=Token_target.hasher_dipendenze.hash(el)
+			h[hashed]=0
+			for d in tok.Dip[el]:
+				#~ print tok.form, tok.lemma
+				#~ print tok.Dip
+				#~ print d
+				#~ m=raw_input()
+				h[hashed]+=len(d['lemmi'])
 		self.Dip_n=h
 		return h
 		
@@ -427,6 +457,8 @@ class Token_target:
 		for el in self.Dip_n:
 			h[el]=1
 		self.Dip_b=h
+		#~ print h
+		#~ m=raw_input()
 		return h
 
 	def fPresenzaCoDip(self, tok):
@@ -436,7 +468,10 @@ class Token_target:
 	def fCoDip_n(self, tok):
 		h={}
 		for el in tok.CoDip:
-			h[Token_target.hasher_dipendenze.hash(el)]=len(tok.CoDip[el]['lemmi'])
+			hashed=Token_target.hasher_dipendenze.hash(el)
+			h[hashed]=0
+			for d in tok.CoDip[el]:
+				h[hashed]+=len(d['lemmi'])
 		self.CoDip_n=h
 		return h
 		
@@ -450,65 +485,80 @@ class Token_target:
 	def fDip_PoS(self, tok):
 		h={}
 		for el in tok.Dip:
-			lista=tok.Dip[el]['PoS']
-			for p in lista:
-				h[p]=1
+			for d in tok.Dip[el]:
+				lista=d['PoS']
+				for p in lista:
+					h[p]=1
 		self.Dip_PoS=h
+		#~ print h
+		#~ m=raw_input()
 		return h
+		
 
 	def fDip_preposizione(self, tok):
 		h={}
 		for el in tok.Dip:
-			p=tok.Dip[el]['preposizioni']
-			#~ print p
-			#~ for p in lista:
-			h[Token_target.hasher_preposizioni.hash(p)]=1
+			for d in tok.Dip[el]:
+				p=d['preposizioni']
+				#~ print p
+				#~ for p in lista:
+				h[Token_target.hasher_preposizioni.hash(p)]=1
 		self.Dip_preposizione=h
+		#~ print tok.form, tok.lemma, tok.Dip
+		#~ print h
+		#~ m=raw_input()
 		return h
 	
 	def fCoDip_PoS(self, tok):
 		h={}
 		for el in tok.CoDip:
-			lista=tok.CoDip[el]['PoS']
-			for p in lista:
-				h[p]=1
+			for d in tok.CoDip[el]:
+				lista=d['PoS']
+				for p in lista:
+					h[p]=1
 		self.CoDip_PoS=h
 		return h
 
 	def fCoDip_preposizione(self, tok):
 		h={}
 		for el in tok.CoDip:
-			p=tok.CoDip[el]['preposizioni']
-			#~ print p
-			#~ for p in lista:
-			h[Token_target.hasher_preposizioni.hash(p)]=1
+			for d in tok.CoDip[el]:
+				p=d['preposizioni']
+				#~ print p
+				#~ for p in lista:
+				h[Token_target.hasher_preposizioni.hash(p)]=1
 		self.CoDip_preposizione=h
 		return h
 		
 	def fDip_lemmi(self, tok):
 		h={}
 		for el in tok.Dip:
-			lista=tok.Dip[el]['lemmi']
-			for l in lista:
-				h[Token_target.hasher_lemmi_dipendenze.hash(l)]=1
+			for d in tok.Dip[el]:
+				lista=d['lemmi']
+				for l in lista:
+					h[Token_target.hasher_lemmi_dipendenze.hash(l)]=1
 		self.Dip_lemmi=h
 		return h
 	
+	
+	###SISTEMARE! C'È UN ERRORE!
 	def fDip_classes(self, tok):
 		h={}
 		for el in tok.Dip:
-			el_hashed=Token_target.hasher_dipendenze.hash(el)
-			h[el_hashed]={}
-			h[el_hashed]['classes']=tok.Dip[el]['classes']
+			for d in tok.Dip[el]:
+				el_hashed=Token_target.hasher_dipendenze.hash(el)
+				h[el_hashed]={}
+				h[el_hashed]['classes']=d['classes']
 		self.Dip_classes=h
 		return h
 	
 	def fCoDip_classes(self, tok):
 		h={}
 		for el in tok.CoDip:
-			el_hashed=Token_target.hasher_dipendenze.hash(el)
-			h[el_hashed]={}
-			h[el_hashed]['classes']=tok.CoDip[el]['classes']
+			for d in tok.CoDip[el]:
+				el_hashed=Token_target.hasher_dipendenze.hash(el)
+				h[el_hashed]={}
+				h[el_hashed]['classes']=d['classes']
 		self.CoDip_classes=h
 		return h
 					

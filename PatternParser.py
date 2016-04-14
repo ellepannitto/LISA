@@ -81,8 +81,12 @@ class Pattern:
 		
 		if chiave[3]:
 			self.records[chiave]=Record(lista, mappa, filler_dict, class_dict)
+			#~ print "aggiunto record:"
+			#~ self.records[chiave].dump()
+			#~ m = raw_input ()
 		else:
 			self.records_test[chiave]=Record(lista, mappa, filler_dict, class_dict)
+		
 			
 	def dump(self):
 		for k, v in self.records.items():

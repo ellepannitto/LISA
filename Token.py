@@ -94,6 +94,9 @@ class Token:
 		"""
 		"""
 		self.ModNum=modNum
+		#~ print modNum
+		#~ print self.form, self.lemma
+		#~ m=raw_input()
 		
 	def fDet(self, ddef, dindef):
 		"""
@@ -111,6 +114,8 @@ class Token:
 			self.AntiDip['lemma']=el.lemmi[0]
 			self.AntiDip['PoS']=el.PoS_testa.upper()
 			self.AntiDip['preposizione']=el.preposizione
+			print vars(lista_antidip[0])
+			m=raw_input()
 			self.AntiDip['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
 		
 			self.AntiDip['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
@@ -119,26 +124,50 @@ class Token:
 			pass
 			
 			
-	#errore
 	def fDip (self, lista_dip):
 		
+		#~ print self.form, self.lemma
+		#~ for el in lista_dip:
+			#~ print vars(el)
+		
+		
 		for el in lista_dip:
-			self.Dip[el.tipo]={}
 			
-			self.Dip[el.tipo]['lemmi']=el.lemmi
-			self.Dip[el.tipo]['PoS']=el.PoS.keys()
-			self.Dip[el.tipo]['preposizioni']=el.preposizione
-			self.Dip[el.tipo]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+			if el.tipo in self.Dip:
+				self.Dip[el.tipo].append({})
+				p=len(self.Dip[el.tipo])-1
+				self.Dip[el.tipo][p]['lemmi']=el.lemmi
+				self.Dip[el.tipo][p]['PoS']=el.PoS.keys()
+				self.Dip[el.tipo][p]['preposizioni']=el.preposizione
+				self.Dip[el.tipo][p]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+				
+			else:
+				self.Dip[el.tipo]=[{}]
+				self.Dip[el.tipo][0]['lemmi']=el.lemmi
+				self.Dip[el.tipo][0]['PoS']=el.PoS.keys()
+				self.Dip[el.tipo][0]['preposizioni']=el.preposizione
+				self.Dip[el.tipo][0]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+
+		#~ print self.Dip
+		#~ m=raw_input()
 
 		
 	def fCoDip (self, lista_codip):
 		for el in lista_codip:
-			self.CoDip[el.tipo]={}
-			
-			self.CoDip[el.tipo]['lemmi']=el.lemmi
-			self.CoDip[el.tipo]['PoS']=el.PoS.keys()
-			self.CoDip[el.tipo]['preposizioni']=el.preposizione
-			self.CoDip[el.tipo]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+			if el.tipo in self.CoDip:
+				self.CoDip[el.tipo].append({})
+				p=len(self.CoDip[el.tipo])-1
+				self.CoDip[el.tipo][p]['lemmi']=el.lemmi
+				self.CoDip[el.tipo][p]['PoS']=el.PoS.keys()
+				self.CoDip[el.tipo][p]['preposizioni']=el.preposizione
+				self.CoDip[el.tipo][p]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+				
+			else:
+				self.CoDip[el.tipo]=[{}]
+				self.CoDip[el.tipo][0]['lemmi']=el.lemmi
+				self.CoDip[el.tipo][0]['PoS']=el.PoS.keys()
+				self.CoDip[el.tipo][0]['preposizioni']=el.preposizione
+				self.CoDip[el.tipo][0]['classes']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
 
 
 
@@ -150,7 +179,7 @@ class Token:
 		self.ModAdj_lemmi_post=set()
 		self.ModAdj_cluster_pre=set()
 		self.ModAdj_cluster_post=set()
-		self.modNum=False
+		self.ModNum=False
 		self.Det_def=False
 		self.Det_indef=False
 		self.AntiDip={}

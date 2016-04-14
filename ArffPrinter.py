@@ -4,12 +4,22 @@
 import time
 
 class ArffPrinter:
-	
-	#~ file_intestazione=open("../arff/intestazione.arff", "w")
-	#~ file_dati=open("../arff/provaout.arff", "w")
-	
+	"""
+	Gli oggetti della classe ArffPrinter si occupano della stampa in formato arff del corpus.
+	"""
 	
 	def __init__(self, versione):
+		"""
+		Inizializza un oggetto di classe ArffPrinter.
+		
+		crea tre file per tenere traccia di:
+			intestazione
+			dataset di train
+			elenco ordinato dei token per un mapping da effetturare dopo la fase di test
+		
+		Parametri:
+			versione -> codice dell'arff che verrà stampato
+		"""
 		self.intestazione="% 1. Title: LSO SuperSense Tagging\n%\n"+\
 						"% 2. Sources:\n% \ta. Corpus:\n% \tb. Date: "+time.strftime("%d-%m-%y")+"\n"+\
 						"% 3. Version: "+versione+"\n%\n"+\
@@ -22,6 +32,14 @@ class ArffPrinter:
 	
 		
 	def stampaIntestazione(self, lista_con_tipi, versione):
+		"""
+		Stampa l'intestazione del file arff.
+		
+		Parametri:
+			lista_con_tipi ->
+			versione ->
+		"""
+		
 		
 		self.file_intestazione.write(self.intestazione)
 		
@@ -29,7 +47,9 @@ class ArffPrinter:
 			for tupla in lista:
 				nome='|'.join(tupla[0])
 				#correggere numeric
-				tipo="{"+','.join(tupla[1])+"}"
+				tipo=tupla[1]
+				if not isinstance(tupla[1], str):
+					tipo="{"+','.join(tupla[1])+"}"
 				s="@attribute "+nome+" "+tipo+"\n"
 				self.file_intestazione.write(s)
 
