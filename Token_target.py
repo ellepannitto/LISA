@@ -416,13 +416,13 @@ class Token_target:
 		c=False
 		if len(tok.AntiDip)>0:
 			h = tok.AntiDip['forza_associazione']
-			for k,m in tok.AntiDip['forza_associazione'].items():
-				if m>0:
-					c=True
-		if c:
-			print tok.AntiDip
-			print h
-			m=raw_input()
+			#~ for k,m in tok.AntiDip['forza_associazione'].items():
+				#~ if m>0:
+					#~ c=True
+		#~ if c:
+			#~ print "[Token target]",tok.AntiDip
+			#~ print "[Token target]",h
+			#~ m=raw_input()
 		self.AntiDip_forzaassociazioni =  h
 		return h
 		
@@ -549,7 +549,10 @@ class Token_target:
 				el_hashed=Token_target.hasher_dipendenze.hash(el)
 				h[el_hashed]={}
 				h[el_hashed]['classes']=d['classes']
+				#~ print d['classes']
 		self.Dip_classes=h
+		#~ print tok.form, tok.lemma, h
+		#~ m=raw_input()
 		return h
 	
 	def fCoDip_classes(self, tok):

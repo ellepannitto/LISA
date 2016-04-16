@@ -42,6 +42,9 @@ class Pattern:
 		filler_dict=depfiller.listaAssociazioni
 		class_dict=depclass.listaAssociazioni
 		
+		#print "[Pattern Parser] debug chiavi in filler_dict:", filler_dict.keys()
+		#m = raw_input ()
+		
 		self.records={}
 		self.records_test={}
 		
@@ -130,8 +133,7 @@ class AntiDip:
 		self.scaledLL=0
 		self.ranking=0
 		
-		print "[Pattern Parser] debug forza_associazione: "
-		print "tupla_filler:", tupla_filler, "in filler_dict", tupla_filler in filler_dict
+		#~ print "[Pattern Parser] tupla_filler:", tupla_filler, "in filler_dict", tupla_filler in filler_dict
 		
 		if tupla_filler in filler_dict:
 			el=filler_dict[tupla_filler]
@@ -143,9 +145,9 @@ class AntiDip:
 			self.scaledLL=el.scaledLL
 			self.ranking=el.ranking
 		
-		print "normalizedLL", self.normalizedLL
-		print "scaledLL", self.scaledLL
-		m = raw_input ();
+			#~ print "normalizedLL", self.normalizedLL
+			#~ print "scaledLL", self.scaledLL
+			#~ m = raw_input ();
 		
 		tupla_class=None
 		for lemma in self.lemmi:
@@ -256,11 +258,13 @@ class Dip:
 					self.loc+=(1.0/len(dizionario[lemma])) if ("LOCATION" in dizionario[lemma]) else 0
 					self.ev+=(1.0/len(dizionario[lemma])) if ("EVENT" in dizionario[lemma]) else 0
 					self.obj+=(1.0/len(dizionario[lemma])) if ("OBJECT" in dizionario[lemma]) else 0
+				#~ print lemma, dizionario[lemma]
+				#~ print self.abst, self.anim, self.loc, self.ev, self.obj
+				#~ m=raw_input()
 			except IndexError:
 				print "Errore PoSTagging ", e
 			
-			#~ print self.abst, self.anim, self.loc, self.ev, self.obj
-			#~ m=raw_input()
+			
 		
 		if 'S' in self.PoS:
 			self.abst/=self.PoS['S']

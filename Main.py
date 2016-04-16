@@ -19,15 +19,15 @@ import Dumper
 
 class Main:
 		
-	_PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
-	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_testing"
+	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
+	_PARSE_CORPUS_STD = "../dati/corpus/corpus_testing"
 	_PARSE_REPUBBLICA_STD = "../dati/repubblicaFreqs/sorted.repubblica.sensitive.lemmasAndPos"
 	_PARSE_MAPPA_STD = "../dati/Mapping/fillers2LSO-merged.map"
 	_PARSE_DEPFILLER_STD = "../dati/Patterns/evalita2011.lemmaDepFiller.ass"
 	_PARSE_DEPCLASS_STD = "../dati/Patterns/evalita2011.lemmaDepClass.freqs"
 	_PARSE_CLUSTERS_STD = "../dati/adjClasses/adjs2WNclusters-merged.txt"
-	_PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
-	#~ _PARSE_PATTERN_STD = "../dati/Patterns/primo_documento.sp"
+	#~ _PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
+	_PARSE_PATTERN_STD = "../dati/Patterns/primo_documento.sp"
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
@@ -87,7 +87,7 @@ class Main:
 		associazioni_filler = self.parse_or_dump("depfiller", Main._DUMP_DEPFILLER_STD, lambda: AF.AssociazioniFiller( Main._PARSE_DEPFILLER_STD ), ["pattern", "corpus"] )
 		associazioni_class = self.parse_or_dump("depclass", Main._DUMP_DEPCLASS_STD, lambda: AC.AssociazioniClass( Main._PARSE_DEPCLASS_STD ), ["pattern", "corpus"] )
 		mappa_cluster = self.parse_or_dump("clusters", Main._DUMP_CLUSTERS_STD, lambda: JC.AdjectiveCluster( Main._PARSE_CLUSTERS_STD ) )
-		pattern = self.parse_or_dump("pattern", Main._DUMP_PATTERN_STD, lambda: PP.Pattern ( Main._PARSE_PATTERN_STD, mappa_cluster, associazioni_class, associazioni_filler ), ["corpus"] )
+		pattern = self.parse_or_dump("pattern", Main._DUMP_PATTERN_STD, lambda: PP.Pattern ( Main._PARSE_PATTERN_STD, mappa_sensi, associazioni_filler, associazioni_class ), ["corpus"] )
 		corpus = self.parse_or_dump("corpus", Main._DUMP_CORPUS_STD, lambda: C.Corpus( Main._PARSE_CORPUS_STD, pattern, mappa_cluster ) )
 		
 		features = self.parse_or_dump("features", Main._DUMP_FEATURES_STD, lambda: CR.ConfigReader( Main._PARSE_FEATURES_STD ) )
