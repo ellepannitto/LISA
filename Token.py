@@ -117,9 +117,9 @@ class Token:
 			
 			
 			self.AntiDip['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
-			print "[TOKEN] debug forza_associazione:"
-			print self.lemma, self.Antidip['forza_associazione']
-			m = raw_input ();
+			#~ print "[TOKEN] debug forza_associazione:"
+			#~ print self.lemma, self.Antidip['forza_associazione']
+			#~ m = raw_input ();
 			
 			self.AntiDip['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
 		else:

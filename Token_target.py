@@ -35,6 +35,12 @@ class Token_target:
 	hasher_antidipendenze = H.Hasher ();
 	hasher_lemmi_antidipendenze = H.Hasher ();
 	hasher_preposizioni = H.Hasher();
+	hasher_morfologia_genere = H.Hasher();
+	hasher_morfologia_numero = H.Hasher();
+	hasher_PoS_sostantivi = H.Hasher();
+	hasher_PoS = H.Hasher();
+	hasher_CPoS = H.Hasher();
+	
 	
 	def set_dizionario_filtro (diz):
 		if Token_target.dizionario_filtro is not None:
@@ -49,6 +55,7 @@ class Token_target:
 	def __init__ (self, tok, frase):
 		self.from_token (tok)
 		self.from_frase (tok.posizione, frase)
+		
 	
 	def from_token (self, tok):
 		"""
@@ -103,14 +110,15 @@ class Token_target:
 			self.fCoDip_PoS ( tok )
 			self.fCoDip_preposizione ( tok )
 			self.fDip_lemmi ( tok )
-			self.fDip_classes ( tok )
-			self.fCoDip_classes ( tok )
+			#~ self.fDip_classes ( tok )
+			#~ self.fCoDip_classes ( tok )
 			self.fLSO ( tok )
 			
 		else: # dizionario_filtro is None
 			print "[Token_target] ERROR: you must set dizionario_filtro first"
 			print "[Token_target] error occurs while initialising token:", tok
 			sys.exit ()
+	
 	
 	def from_frase (self, posizione, frase):
 		"""
@@ -134,7 +142,7 @@ class Token_target:
 		return self.id
 	
 	def fForm (self, form):
-		self.form = Token_target.hasher_forms.hash (form)
+		self.form =Token_target.hasher_forms.hash (form)
 		return self.form
 	
 	def fLemma (self, lemma, pos):
@@ -150,21 +158,24 @@ class Token_target:
 	def fMorfologia_genere ( self, morfologia ):
 		#~ assert "gen" in morfologia, "[Token_target] ERROR: found token with no 'gen' in morfologia"
 		if "gen" in morfologia:
-			self.morfologia_genere = morfologia["gen"]
+			morfologia_genere = morfologia["gen"]
 		else:
-			self.morfologia_genere = "missing"
+			morfologia_genere = "MISSING_VALUE"
 		
+		self.morfologia_genere=Token_target.hasher_morfologia_genere.hash(morfologia_genere)
 		
 	def fMorfologia_numero ( self, morfologia ):
 		#~ assert "num" in morfologia, "[Token_target] ERROR: found token with no 'num' in morfologia"
 		if "num" in morfologia:
-			self.morfologia_numero = morfologia["num"]
+			morfologia_numero = morfologia["num"]
 		else:
-			self.morfologia_numero = "missing"
+			morfologia_numero = "MISSING_VALUE"
+	
+		self.morfologia_numero=Token_target.hasher_morfologia_numero.hash ( morfologia_numero )
 	
 	def fPoS (self, pos):
-		self.PoS = pos
-
+		self.PoS = Token_target.hasher_PoS_sostantivi.hash(pos)
+		
 	def fCPoS (self, cpos):
 		self.CPoS = cpos
 	
@@ -181,8 +192,9 @@ class Token_target:
 		self.Hyphen=1 if len(l)==2 else 0
 		return self.Hyphen	
 
-	def fFrequenzaLemmaPoS(self, lemma, dizionario_frequenze):
-		tupla=tuple([lemma]+[self.PoS])
+	def fFrequenzaLemmaPoS(self, tok, dizionario_frequenze):
+		tupla=tuple([tok.lemma]+[tok.PoS])
+
 		if tupla in dizionario_frequenze:
 			if dizionario_frequenze[tupla]>936:
 				ret="altissima"
@@ -200,8 +212,8 @@ class Token_target:
 		self.FrequenzaLemmaPoS=ret
 		return ret
 
-	def fFrequenzaLemmaPoS_log (self, lemma, dizionario_frequenze):
-		tupla=tuple([lemma]+[self.PoS])
+	def fFrequenzaLemmaPoS_log (self, tok, dizionario_frequenze):
+		tupla=tuple([tok.lemma]+[tok.PoS])
 		if tupla in dizionario_frequenze:
 			ret=round(math.log(dizionario_frequenze[tupla]))
 		else:
@@ -210,9 +222,9 @@ class Token_target:
 		self.FrequenzaLemmaPoS_log=ret
 		return ret
 
-	def fFrequenzaRelativaLemmaPoS (self, lemma, soglia, dizionario_frequenze, frequenze_cumulate, massimafreq):
-		tupla=tuple([lemma]+[self.PoS])
-		totale=frequenze_cumulate[lemma]+1.0 if lemma in frequenze_cumulate else massimafreq		
+	def fFrequenzaRelativaLemmaPoS (self, tok, soglia, dizionario_frequenze, frequenze_cumulate, massimafreq):
+		tupla=tuple([tok.lemma]+[tok.PoS])
+		totale=frequenze_cumulate[tok.lemma]+1.0 if tok.lemma in frequenze_cumulate else massimafreq		
 		f = dizionario_frequenze[tupla] if tupla in dizionario_frequenze else 0.0
 		ret=f/totale
 		self.FrequenzaRelativaLemmaPoS=1 if ret<=soglia else 0
@@ -244,19 +256,39 @@ class Token_target:
 		return self.FirstWord 
 		
 	def fPoSPrev(self, posizione, frase):
-		self.PoSPrev='M' if not posizione-1 in frase.tokens else frase.tokens[posizione-1].PoS
+		if not posizione-1 in frase.tokens:
+			PoSPrev="MISSING_VALUE"  
+		else:
+			PoSPrev=frase.tokens[posizione-1].PoS
+		
+		self.PoSPrev=Token_target.hasher_PoS.hash(PoSPrev)
 		return self.PoSPrev
 	
-	def fPoSNext(self, posizione, frase):			
-		self.PoSNext=frase.tokens[posizione+1].PoS if posizione+1 in frase.tokens else 'M'
+	def fPoSNext(self, posizione, frase):
+		if posizione+1 in frase.tokens:			
+			PoSNext=frase.tokens[posizione+1].PoS  
+		else:
+			PoSNext="MISSING_VALUE"
+			
+		self.PoSNext=Token_target.hasher_PoS.hash(PoSNext)
 		return self.PoSNext
 
 	def fCPoSPrev(self, posizione, frase):
-		self.CPoSPrev='M' if not posizione-1 in frase.tokens else frase.tokens[posizione-1].CPoS
+		if not posizione-1 in frase.tokens:
+			CPoSPrev="MISSING_VALUE"  
+		else:
+			CPoSPrev=frase.tokens[posizione-1].CPoS
+		
+		self.CPoSPrev=Token_target.hasher_CPoS.hash(CPoSPrev)
 		return self.CPoSPrev
 	
 	def fCPoSNext(self, posizione, frase):
-		self.CPoSNext='M' if not posizione+1 in frase.tokens else frase.tokens[posizione+1].CPoS
+		if not posizione+1 in frase.tokens:
+			CPoSNext="MISSING_VALUE"
+		else:
+			CPoSNext=frase.tokens[posizione+1].CPoS
+		
+		self.CPoSNext=Token_target.hasher_CPoS.hash(CPoSNext)
 		return self.CPoSNext
 
 	def fSeqCap(self, posizione, frase):
@@ -379,36 +411,48 @@ class Token_target:
 		return self.PresenzaDet
 	
 	def fAntiDip_tipo (self, tok):
-		h = 'M'
+		#~ h = {}
+		
 		if len(tok.AntiDip)>0:
 			tipo = tok.AntiDip['tipo']
-			h = Token_target.hasher_antidipendenze.hash (tipo)
-		self.AntiDip_tipo =  h
+			h = tipo
+		else:
+			h = "MISSING_VALUE"
+			
+		self.AntiDip_tipo =  Token_target.hasher_antidipendenze.hash (h)
 		return h
 
 	def fAntiDip_lemmi (self, tok):
-		h = 'M'
+		#~ h = {}
+		
 		if len(tok.AntiDip)>0:
 			lemma = tok.AntiDip['lemma']
-			h = Token_target.hasher_lemmi_antidipendenze.hash (lemma)
-		self.AntiDip_lemmi =  h
+			h = lemma
+		else:
+			h = "MISSING_VALUE"
+			
+		self.AntiDip_lemmi =  Token_target.hasher_lemmi_antidipendenze.hash (h)
 		return h
 
 	def fAntiDip_PoS (self, tok):
-		h = 'M'
+		#~ h = {}
 		if len(tok.AntiDip)>0:
 			pos = tok.AntiDip['PoS']
 			h = pos
-		self.AntiDip_PoS =  h
+		else:
+			h = "MISSING_VALUE"
+		self.AntiDip_PoS =  Token_target.hasher_CPoS.hash(h)
 		return h
 
 	def fAntiDip_preposizione (self, tok):
-		h = 'M'
+		#~ h = {}
 		if len(tok.AntiDip)>0:
 			prep = tok.AntiDip['preposizione']
 			#~ print prep
-			h = Token_target.hasher_preposizioni.hash (prep)
-		self.AntiDip_preposizione =  h
+			h = prep
+		else:
+			h = "MISSING_VALUE"
+		self.AntiDip_preposizione =  Token_target.hasher_preposizioni.hash(h)
 		return h
 	
 	def fAntiDip_forzaassociazioni (self, tok):
@@ -419,10 +463,10 @@ class Token_target:
 			for k,m in tok.AntiDip['forza_associazione'].items():
 				if m>0:
 					c=True
-		if c:
-			print tok.AntiDip
-			print h
-			m=raw_input()
+		#~ if c:
+			#~ print tok.AntiDip
+			#~ print h
+			#~ m=raw_input()
 		self.AntiDip_forzaassociazioni =  h
 		return h
 		
@@ -542,25 +586,25 @@ class Token_target:
 	
 	
 	###SISTEMARE! C'È UN ERRORE!
-	def fDip_classes(self, tok):
-		h={}
-		for el in tok.Dip:
-			for d in tok.Dip[el]:
-				el_hashed=Token_target.hasher_dipendenze.hash(el)
-				h[el_hashed]={}
-				h[el_hashed]['classes']=d['classes']
-		self.Dip_classes=h
-		return h
+	#~ def fDip_classes(self, tok):
+		#~ h={}
+		#~ for el in tok.Dip:
+			#~ for d in tok.Dip[el]:
+				#~ el_hashed=Token_target.hasher_dipendenze.hash(el)
+				#~ h[el_hashed]={}
+				#~ h[el_hashed]['classes']=d['classes']
+		#~ self.Dip_classes=h
+		#~ return h
 	
-	def fCoDip_classes(self, tok):
-		h={}
-		for el in tok.CoDip:
-			for d in tok.CoDip[el]:
-				el_hashed=Token_target.hasher_dipendenze.hash(el)
-				h[el_hashed]={}
-				h[el_hashed]['classes']=d['classes']
-		self.CoDip_classes=h
-		return h
+	#~ def fCoDip_classes(self, tok):
+		#~ h={}
+		#~ for el in tok.CoDip:
+			#~ for d in tok.CoDip[el]:
+				#~ el_hashed=Token_target.hasher_dipendenze.hash(el)
+				#~ h[el_hashed]={}
+				#~ h[el_hashed]['classes']=d['classes']
+		#~ self.CoDip_classes=h
+		#~ return h
 					
 	def fLSO(self, tok):
 		self.LSO=tok.LSO

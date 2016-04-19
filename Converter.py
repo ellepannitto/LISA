@@ -35,30 +35,43 @@ class Converter:
 						tt = TT.Token_target (tok, frase)
 						tt.fId (n, m, k)
 						tt.fWithinQuotes (quotes)
-						tt.fFrequenzaLemmaPoS (tok.lemma, dizionario_frequenze)
-						tt.fFrequenzaLemmaPoS_log (tok.lemma, dizionario_frequenze)
-						tt.fFrequenzaRelativaLemmaPoS (tok.lemma, 0.1, dizionario_frequenze, frequenze_cumulate, massimafreq)
+						tt.fFrequenzaLemmaPoS (tok, dizionario_frequenze)
+						tt.fFrequenzaLemmaPoS_log (tok, dizionario_frequenze)
+						tt.fFrequenzaRelativaLemmaPoS (tok, 0.1, dizionario_frequenze, frequenze_cumulate, massimafreq)
 						ret.append (tt)
 				m+=1
 		self.set_liste_possibili_valori ()
+		self.dump_hasher()
 		return ret
+	
+	def dump_hasher(self):
+		TT.Token_target.hasher_forms.dump("../dump/hasher/forms")
+		TT.Token_target.hasher_lemmas.dump("../dump/hasher/lemmi")
+		TT.Token_target.hasher_dipendenze.dump("../dump/hasher/dipendenze")
+		TT.Token_target.hasher_lemmi_dipendenze.dump("../dump/hasher/lemmi_dipendenze")
+		TT.Token_target.hasher_aggettivi.dump("../dump/hasher/aggettivi")
+		TT.Token_target.hasher_cluster.dump("../dump/hasher/cluster")
+		TT.Token_target.hasher_antidipendenze.dump("../dump/hasher/antidipendenze")
+		TT.Token_target.hasher_lemmi_antidipendenze.dump("../dump/hasher/lemmi_antidipendenze")
+		TT.Token_target.hasher_preposizioni.dump("../dump/hasher/preposizioni")
+		print "[CONVERTER] fine dump hash"
 	
 	def set_liste_possibili_valori (self):
 		self.lista_di_tutti_i_possibili = {}
-		self.lista_di_tutti_i_possibili ["lemmi"] = TT.Token_target.hasher_lemmas.dizionario_hash.values() + [ "M" ]
-		self.lista_di_tutti_i_possibili ["forme"] = TT.Token_target.hasher_forms.dizionario_hash.values() + [ "M" ]
-		self.lista_di_tutti_i_possibili ["morfologia_genere"] = ["m", "f", "n", "missing"]
-		self.lista_di_tutti_i_possibili ["morfologia_numero"] = ["s", "p", "n", "missing"]
-		self.lista_di_tutti_i_possibili ["CPoS"] = ["A", "C", "B", "E", "D", "F", "I", "N", "P", "S", "R", "T", "V", "X", "M"]
+		self.lista_di_tutti_i_possibili ["lemmi"] = TT.Token_target.hasher_lemmas.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["forme"] = TT.Token_target.hasher_forms.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["morfologia_genere"] = TT.Token_target.hasher_morfologia_genere.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["morfologia_numero"] = TT.Token_target.hasher_morfologia_numero.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["CPoS"] = TT.Token_target.hasher_CPoS.dizionario_hash.values()
 		self.lista_di_tutti_i_possibili ["CPoS_sostantivi"] = ["S"]
 		self.lista_di_tutti_i_possibili ["bin_frequenza"] = ["altissima","alta","media","bassa","bassissima"]
-		self.lista_di_tutti_i_possibili ["aggettivi"] = TT.Token_target.hasher_aggettivi.dizionario_hash.values() + [ "M" ]
-		self.lista_di_tutti_i_possibili ["clusters"] = TT.Token_target.hasher_cluster.dizionario_hash.values() + [ "M" ]
-		self.lista_di_tutti_i_possibili ["dipendenze"] = TT.Token_target.hasher_dipendenze.dizionario_hash.values() + [ "M" ]
+		self.lista_di_tutti_i_possibili ["aggettivi"] = TT.Token_target.hasher_aggettivi.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["clusters"] = TT.Token_target.hasher_cluster.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["dipendenze"] = TT.Token_target.hasher_dipendenze.dizionario_hash.values()
 		self.lista_di_tutti_i_possibili ["LSO"] = ["ANIMATE", "ABSTRACT", "OBJECT", "EVENT", "LOCATION", "O"] 
 		self.lista_di_tutti_i_possibili ["misure_associazione"] = ["normalizedLL", "scaledLL"]
-		self.lista_di_tutti_i_possibili ["PoS"] = ["FS", "DI", "BN", "DE", "DD", "DR", "FB", "FC", "FF", "DQ", "PR", "PP", "PQ", "NO", "RD", "PC", "PD", "PE", "PI", "RI", "A", "VA", "B", "E", "CC", "EA", "VM", "N", "AP", "S", "T", "V", "CS", "X", "I", "P", "SP", "SW", "SA", "M"]
-		self.lista_di_tutti_i_possibili ["PoS_sostantivi"] = ["S", "SP", "SW", "SA", "M" ]
-		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_antidipendenze.dizionario_hash.values() + [ "M" ]
-		self.lista_di_tutti_i_possibili ["preposizioni"] = TT.Token_target.hasher_preposizioni.dizionario_hash.values() + [ "M" ]
-		self.lista_di_tutti_i_possibili ["lemmi_dipendenze"] = TT.Token_target.hasher_lemmi_dipendenze.dizionario_hash.values() + [ "M" ]
+		self.lista_di_tutti_i_possibili ["PoS"] = TT.Token_target.hasher_PoS.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["PoS_sostantivi"] = TT.Token_target.hasher_PoS_sostantivi.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_antidipendenze.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["preposizioni"] = TT.Token_target.hasher_preposizioni.dizionario_hash.values()
+		self.lista_di_tutti_i_possibili ["lemmi_dipendenze"] = TT.Token_target.hasher_lemmi_dipendenze.dizionario_hash.values()

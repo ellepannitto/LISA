@@ -89,7 +89,7 @@ class Type_resolver:
 			ret = []
 			if "*" not in tipo:
 				tipo_arff = self.tipo_to_arff (tipo)
-				ret = [ tuple([lista_nome]+[tipo_arff]) ]
+				ret = [ tuple([lista_nome]+[tipo_arff]+[tipo]) ]
 			else:
 				tipo_split = tipo.split ('*',1)
 				

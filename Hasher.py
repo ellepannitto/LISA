@@ -1,6 +1,8 @@
 #!/usr/bin/python
 #coding: utf-8
 
+import codecs
+
 class Hasher:
 	"""
 	Gli oggetti di questa classe vengono usati per generare dei codici univoci interi (hash) a partire da qualsiasi variabile, tipicamente stringhe
@@ -11,8 +13,8 @@ class Hasher:
 		"""
 		Costruttore di default
 		"""
-		self.next_hash = 0
-		self.dizionario_hash = {}
+		self.next_hash = 1
+		self.dizionario_hash = {"MISSING_VALUE":0}
 	
 	def hash (self, s):
 		"""
@@ -26,9 +28,15 @@ class Hasher:
 		if s in self.dizionario_hash:
 			ret = self.dizionario_hash[s]
 		else:
-			self.dizionario_hash[s] = str(self.next_hash)
+			self.dizionario_hash[s] = self.next_hash
 			self.next_hash += 1
 		return self.dizionario_hash[s]
+
+	def dump (self, nome_file):
+		file_output=codecs.open(nome_file, "w", "utf-8")
+		
+		for key, val in self.dizionario_hash.items():
+			file_output.write(key.decode("utf-8")+"\t"+str(val)+"\n")
 
 	
 def test_hash ():

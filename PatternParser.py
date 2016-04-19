@@ -130,8 +130,8 @@ class AntiDip:
 		self.scaledLL=0
 		self.ranking=0
 		
-		print "[Pattern Parser] debug forza_associazione: "
-		print "tupla_filler:", tupla_filler, "in filler_dict", tupla_filler in filler_dict
+		#~ print "[Pattern Parser] debug forza_associazione: "
+		#~ print "tupla_filler:", tupla_filler, "in filler_dict", tupla_filler in filler_dict
 		
 		if tupla_filler in filler_dict:
 			el=filler_dict[tupla_filler]
@@ -143,9 +143,9 @@ class AntiDip:
 			self.scaledLL=el.scaledLL
 			self.ranking=el.ranking
 		
-		print "normalizedLL", self.normalizedLL
-		print "scaledLL", self.scaledLL
-		m = raw_input ();
+		#~ print "normalizedLL", self.normalizedLL
+		#~ print "scaledLL", self.scaledLL
+		#~ m = raw_input ();
 		
 		tupla_class=None
 		for lemma in self.lemmi:

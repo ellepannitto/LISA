@@ -14,6 +14,8 @@ import ConfigReader as CR
 import Converter as CVT
 import TypeResolver as TR
 import ArffPrinter as AP
+import MatrixPrinter as MP
+#~ import Classifier as CL
 
 import Dumper
 
@@ -28,12 +30,13 @@ class Main:
 	_PARSE_CLUSTERS_STD = "../dati/adjClasses/adjs2WNclusters-merged.txt"
 	_PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
 	#~ _PARSE_PATTERN_STD = "../dati/Patterns/primo_documento.sp"
+	#~ _PARSE_FEATURES_STD = "../dati/Config/lista_features_unitarie"
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
-	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
+	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
-	_PARSE_CONFIGURAZIONI_STD = [ "../dati/Config/test/t_antidip", "../dati/Config/test/t_associazioni_testa", "../dati/Config/test/t_codip", "../dati/Config/test/t_dip", "../dati/Config/test/t_diplemmi", "../dati/Config/test/t_distribuzionali", "../dati/Config/test/t_lso", "../dati/Config/test/t_modadj", "../dati/Config/test/t_morfologia", "../dati/Config/test/t_NER_e_filtri", "../dati/Config/test/t_PoS"]
-	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_06"]
-	
+	#~ _PARSE_CONFIGURAZIONI_STD = [ "../dati/Config/test/t_antidip", "../dati/Config/test/t_associazioni_testa", "../dati/Config/test/t_codip", "../dati/Config/test/t_dip", "../dati/Config/test/t_diplemmi", "../dati/Config/test/t_distribuzionali", "../dati/Config/test/t_lso", "../dati/Config/test/t_modadj", "../dati/Config/test/t_morfologia", "../dati/Config/test/t_NER_e_filtri", "../dati/Config/test/t_PoS"]
+	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00"]
+
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"
 	_DUMP_REPUBBLICA_STD = "../dump/sorted.repubblica.sensitive.lemmasAndPos"
 	_DUMP_MAPPA_STD = "../dump/fillers2LSO-merged.map"
@@ -47,6 +50,8 @@ class Main:
 	_PARSE = 1
 	_DUMP = 2
 	_DUMP_OR_PARSE = 3
+	
+	_CONF = 1
 	
 	def comportamento ( self, modulo, o ):
 		self.opzione[modulo] = o
@@ -99,48 +104,41 @@ class Main:
 		
 		type_resolver = TR.Type_resolver ( )
 		TR.Type_resolver.dizionario_possibili_liste = converter.lista_di_tutti_i_possibili
-				
-		#~ lista_features_atomiche = []
-		#~ for tupla in features.features_scelte:
-			#~ nome = tupla[0]
-			#~ tipo = tupla[1]			
-			#~ lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
-		
-		#~ print lista_features_atomiche
-		
-		#~ printer.stampaIntestazione(lista_features_atomiche)
+
 		
 		for file_configurazione in Main._PARSE_CONFIGURAZIONI_STD:
 			
 			#~ configurazione = self.parse_or_dump("configurazione", Main._DUMP_CONFIGURAZIONE_STD, lambda: CR.ConfigReader( Main._PARSE_CONFIGURAZIONE_STD ) )
 			
 			configurazione=CR.ConfigReader(file_configurazione)
-			printer=AP.ArffPrinter(configurazione.versione)
+			printer=MP.MatrixPrinter(configurazione.versione)
 			
 			lista_features_atomiche = []
 			for tupla in configurazione.features_scelte:
 				nome = tupla[0]
 				tipo = tupla[1]			
 				lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
+				
+				#~ print lista_features_atomicheS
 			
-			printer.produci_arff(configurazione.versione, lista_features_atomiche, lista_da_stampare)
-		
-
-		#~ for tt in lista_da_stampare:
-			#~ print tt.id, tt.lemma
-		
-		#~ print converter.lista_di_tutti_i_possibili
-		
+			printer.produci_matrice(configurazione.versione, lista_features_atomiche, lista_da_stampare)
+			
+			#~ CL.Classifier(printer)
+			
+			Dumper.binary_dump (printer, "../arff/matrici/"+printer.versione)
+			
+			
+			
 
 if __name__ == "__main__":
 	m = Main ()
-	m.comportamento ("corpus", Main._PARSE)
-	m.comportamento ("repubblica", Main._PARSE)
-	m.comportamento ("mappa", Main._PARSE)
-	m.comportamento ("depfiller", Main._PARSE)
-	m.comportamento ("depclass", Main._PARSE)
-	m.comportamento ("cluster", Main._PARSE)
-	m.comportamento ("pattern", Main._PARSE)
-	m.comportamento ("features", Main._PARSE)
-	m.comportamento ("configurazione", Main._PARSE)
+	m.comportamento ("corpus", Main._CONF)
+	m.comportamento ("repubblica", Main._CONF)
+	m.comportamento ("mappa", Main._CONF)
+	m.comportamento ("depfiller", Main._CONF)
+	m.comportamento ("depclass", Main._CONF)
+	m.comportamento ("cluster", Main._CONF)
+	m.comportamento ("pattern", Main._CONF)
+	m.comportamento ("features", Main._CONF)
+	m.comportamento ("configurazione", Main._CONF)
 	m.perform ()
