@@ -32,6 +32,14 @@ class Hasher:
 			self.next_hash += 1
 		return self.dizionario_hash[s]
 
+	def unhash (self, i):
+		for k, v in self.dizionario_hash.items():
+			if v==i:
+				return k
+				
+		return ""
+				
+
 	def dump (self, nome_file):
 		file_output=codecs.open(nome_file, "w", "utf-8")
 		

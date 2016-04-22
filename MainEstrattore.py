@@ -32,10 +32,10 @@ class Main:
 	#~ _PARSE_PATTERN_STD = "../dati/Patterns/primo_documento.sp"
 	#~ _PARSE_FEATURES_STD = "../dati/Config/lista_features_unitarie"
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
-	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
+	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = [ "../dati/Config/test/t_antidip", "../dati/Config/test/t_associazioni_testa", "../dati/Config/test/t_codip", "../dati/Config/test/t_dip", "../dati/Config/test/t_diplemmi", "../dati/Config/test/t_distribuzionali", "../dati/Config/test/t_lso", "../dati/Config/test/t_modadj", "../dati/Config/test/t_morfologia", "../dati/Config/test/t_NER_e_filtri", "../dati/Config/test/t_PoS"]
-	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00"]
+	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_12"]
 
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"
 	_DUMP_REPUBBLICA_STD = "../dump/sorted.repubblica.sensitive.lemmasAndPos"
@@ -46,6 +46,7 @@ class Main:
 	_DUMP_PATTERN_STD = "../dump/evalita2011.selected.pat.sp"
 	_DUMP_FEATURES_STD = "../dump/lista_features"
 	_DUMP_CONFIGURAZIONE_STD = "../dump/v_01"
+	_DUMP_TOKEN_TARGET_STD = "../dump/token_target"
 	
 	_PARSE = 1
 	_DUMP = 2
@@ -67,6 +68,7 @@ class Main:
 		self.opzione ["pattern"] = Main._DUMP_OR_PARSE
 		self.opzione ["features"] = Main._DUMP_OR_PARSE
 		self.opzione ["configurazione"] = Main._DUMP_OR_PARSE
+		self.opzione ["token_target"] = Main._PARSE
 	
 	def test_parse (self, modulo, f):
 		return self.opzione [modulo] == Main._PARSE or  ( self.opzione [modulo] == Main._DUMP_OR_PARSE and not os.path.isfile (f) )
@@ -98,11 +100,11 @@ class Main:
 		features = self.parse_or_dump("features", Main._DUMP_FEATURES_STD, lambda: CR.ConfigReader( Main._PARSE_FEATURES_STD ) )
 		
 		converter = CVT.Converter()
-		lista_da_stampare = converter.converti_corpus_to_token_target( corpus, frequenze_repubblica )
-		
-		#~ print lista_da_stampare
-		
 		type_resolver = TR.Type_resolver ( )
+		
+		lista_da_stampare = self.parse_or_dump("token_target", Main._DUMP_TOKEN_TARGET_STD, lambda: converter.converti_corpus_to_token_target( corpus, frequenze_repubblica ) )
+		
+		
 		TR.Type_resolver.dizionario_possibili_liste = converter.lista_di_tutti_i_possibili
 
 		
@@ -119,9 +121,11 @@ class Main:
 				tipo = tupla[1]			
 				lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
 				
-				#~ print lista_features_atomicheS
+				#~ print lista_features_atomiche
 			
 			printer.produci_matrice(configurazione.versione, lista_features_atomiche, lista_da_stampare)
+			
+			#~ printer.comprimi_dati()
 			
 			#~ CL.Classifier(printer)
 			
@@ -132,13 +136,13 @@ class Main:
 
 if __name__ == "__main__":
 	m = Main ()
-	m.comportamento ("corpus", Main._CONF)
-	m.comportamento ("repubblica", Main._CONF)
-	m.comportamento ("mappa", Main._CONF)
-	m.comportamento ("depfiller", Main._CONF)
-	m.comportamento ("depclass", Main._CONF)
-	m.comportamento ("cluster", Main._CONF)
-	m.comportamento ("pattern", Main._CONF)
-	m.comportamento ("features", Main._CONF)
-	m.comportamento ("configurazione", Main._CONF)
+	m.comportamento ("corpus", Main._PARSE)
+	#~ m.comportamento ("repubblica", Main._DUMP)
+	#~ m.comportamento ("mappa", Main._DUMP)
+	#~ m.comportamento ("depfiller", Main._DUMP)
+	#~ m.comportamento ("depclass", Main._CONF)
+	#~ m.comportamento ("cluster", Main._CONF)
+	m.comportamento ("pattern", Main._PARSE)
+	m.comportamento ("features", Main._PARSE)
+	m.comportamento ("configurazione", Main._PARSE)
 	m.perform ()

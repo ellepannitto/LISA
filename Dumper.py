@@ -3,7 +3,7 @@
 
 import os
 import cPickle
-
+#~ import pickle as cPickle
 	
 def binary_dump (oggetto, nome_file):
 	output=open(nome_file, "w")

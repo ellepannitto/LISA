@@ -8,6 +8,7 @@ from sklearn import metrics
 import scipy.sparse
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.pipeline import Pipeline
 
 
 import Dumper
@@ -24,8 +25,7 @@ class Classifier:
 		self.intestazione=printer.intestazione
 		
 		self.tags=self.normalizza(printer.tags)
-		
-		self.dati=printer.dati
+		self.dati=np.array(printer.dati)
 		self.dati_diplemmi=printer.dati_diplemmi
 	
 		
@@ -61,6 +61,31 @@ class Classifier:
 		#~ print self.tutti_i_possibili_diplemmi
 		#~ m = raw_input ();
 	
+	
+	def perform(self, k):
+		
+		
+		lista_card=[len(self.intestazione[p][0][1]) for p in self.indici_da_trasformare]
+		
+		encoder = preprocessing.OneHotEncoder(n_values=lista_card, categorical_features=self.indici_da_trasformare, dtype=np.int)
+		
+		splitter = cross_validation.LabelKFold(self.labels, n_folds=k)
+		
+		classificatore=svm.LinearSVC()
+		
+		for train_index, test_index in splitter:
+			X_train, X_test = self.dati[train_index], self.dati[test_index]
+			y_train, y_test = self.tags[train_index], self.tags[test_index]
+			
+			pipeline = Pipeline([("enc", encoder),("clf", classificatore)])
+		
+			pipeline.fit(X_train, y_train)
+			prediction = pipeline.predict(X_test)
+		
+		
+			print metrics.classification_report(y_test, prediction)
+			#~ print prediction
+		
 	
 	#vedilo come uno pseudocodice
 	def espandiMatrice_diplemmi (self):
@@ -281,3 +306,4 @@ class Classifier:
 			if gold[i]!=predictions[i]:
 				self.file_output_errori.write ( ide[i]+"\t"+self.inverso_mappa[gold[i]]+"\t"+self.inverso_mappa[predictions[i]]+"\n" )
 		
+

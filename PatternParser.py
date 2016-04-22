@@ -389,6 +389,7 @@ class Record:
 		#~ print self.codip
 		#~ m=raw_input() 
 		
+		
 	def reset (self):
 		self.modAdj_pre = self.modAdj_post = ModAdj()
 		self.det_def = self.det_indef = 0

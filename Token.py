@@ -108,23 +108,45 @@ class Token:
 	def fAntiDip (self, lista_antidip):
 		"""
 		"""
-		if len(lista_antidip)>0:
-			el=lista_antidip[0]
-			self.AntiDip['tipo']=el.tipo
-			self.AntiDip['lemma']=el.lemmi[0]
-			self.AntiDip['PoS']=el.PoS_testa.upper()
-			self.AntiDip['preposizione']=el.preposizione
+		self.AntiDip={}
+		
+		
+			#~ m=raw_input()
+		
+		
+		for el in lista_antidip:
+			self.AntiDip[el.tipo]={}
+			
+			self.AntiDip[el.tipo]['lemma']=el.lemmi[0]
+			self.AntiDip[el.tipo]['PoS']=el.PoS_testa.upper()
+			self.AntiDip[el.tipo]['preposizione']=el.preposizione
+			self.AntiDip[el.tipo]['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
+			self.AntiDip[el.tipo]['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+		
+		#~ if len(lista_antidip)>1:
+			#~ print len(lista_antidip), self.lemma
+			#~ print len(self.AntiDip)
+			#~ m=raw_input()
+		
+		#~ if len(lista_antidip)>0:
+			#~ el=lista_antidip[0]
+			#~ self.AntiDip['tipo']=el.tipo
+			#~ self.AntiDip['lemma']=el.lemmi[0]
+			#~ self.AntiDip['PoS']=el.PoS_testa.upper()
+			#~ self.AntiDip['preposizione']=el.preposizione
 			
 			
-			self.AntiDip['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
+			#~ self.AntiDip['forza_associazione']={'normalizedLL': el.normalizedLL, 'scaledLL': el.scaledLL}
 			#~ print "[TOKEN] debug forza_associazione:"
 			#~ print self.lemma, self.Antidip['forza_associazione']
 			#~ m = raw_input ();
 			
-			self.AntiDip['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
-		else:
+			#~ self.AntiDip['classe_associazione']={'ABSTRACT': el.abst, 'ANIMATE': el.anim, 'LOCATION':el.loc, 'EVENT': el.ev, 'OBJECT': el.obj}
+		
+		
+		#~ else:
 			#print "aveva ragione Ludovica !!! <3 beccato un baco malefico"
-			pass
+			#~ pass
 			
 			
 	def fDip (self, lista_dip):

@@ -32,16 +32,41 @@ class Converter:
 					elif tok.form == '»':
 						quotes = False
 					if tok.CPoS == 'S':
-						tt = TT.Token_target (tok, frase)
-						tt.fId (n, m, k)
-						tt.fWithinQuotes (quotes)
-						tt.fFrequenzaLemmaPoS (tok, dizionario_frequenze)
-						tt.fFrequenzaLemmaPoS_log (tok, dizionario_frequenze)
-						tt.fFrequenzaRelativaLemmaPoS (tok, 0.1, dizionario_frequenze, frequenze_cumulate, massimafreq)
-						ret.append (tt)
+						
+						
+						
+						replicare=len(tok.AntiDip)
+						
+						#~ if replicare > 1:
+							#~ print "sono qui", replicare, tok.lemma, tok.AntiDip
+							#~ i=raw_input()
+						
+						bis=0
+						
+						while True:							
+							tt = TT.Token_target (tok, frase, bis)
+							tt.fId (n, m, k, bis)
+							tt.fWithinQuotes (quotes)
+							tt.fFrequenzaLemmaPoS (tok, dizionario_frequenze)
+							tt.fFrequenzaLemmaPoS_log (tok, dizionario_frequenze)
+							tt.fFrequenzaRelativaLemmaPoS (tok, 0.1, dizionario_frequenze, frequenze_cumulate, massimafreq)
+							ret.append (tt)
+							
+							replicare-=1
+							bis+=1
+							if not replicare>0:
+								break
+						
 				m+=1
 		self.set_liste_possibili_valori ()
 		self.dump_hasher()
+		
+		file_debug=open("token_target", "w")
+		
+		for t in ret:
+			new_dict={TT.Token_target.hasher_lemmi_dipendenze.unhash(k):v for k,v in t.Dip_lemmi.items()}
+			file_debug.write(t.id+" "+str(new_dict)+"\n")
+		
 		return ret
 	
 	def dump_hasher(self):

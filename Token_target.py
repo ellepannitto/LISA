@@ -52,12 +52,12 @@ class Token_target:
 			print "[Token_target] the new dizionario_filtro will overwrite the old one"
 			Token_target.dizionario_filtro = diz
 		
-	def __init__ (self, tok, frase):
-		self.from_token (tok)
+	def __init__ (self, tok, frase, p):
+		self.from_token (tok, p)
 		self.from_frase (tok.posizione, frase)
 		
 	
-	def from_token (self, tok):
+	def from_token (self, tok, replica):
 		"""
 		Calcola le feature che dipendono esclusivamente dal token in esame
 		"""
@@ -93,12 +93,12 @@ class Token_target:
 			self.fDet_def ( tok )  
 			self.fDet_indef ( tok )
 			self.fPresenzaDet ( )
-			self.fAntiDip_tipo ( tok )
-			self.fAntiDip_lemmi ( tok )
-			self.fAntiDip_PoS ( tok )
-			self.fAntiDip_preposizione ( tok ) 
-			self.fAntiDip_forzaassociazioni ( tok )
-			self.fAntiDip_classeassociazioni ( tok )
+			self.fAntiDip_tipo ( tok , replica )
+			self.fAntiDip_lemmi ( tok , replica )
+			self.fAntiDip_PoS ( tok , replica )
+			self.fAntiDip_preposizione ( tok , replica ) 
+			self.fAntiDip_forzaassociazioni ( tok , replica )
+			self.fAntiDip_classeassociazioni ( tok , replica )
 			self.fPresenzaDip ( tok )
 			self.fDip_n ( tok )
 			self.fDip_b ()
@@ -133,12 +133,16 @@ class Token_target:
 		self.fCapNext (posizione, frase)
 		self.fCapPrev (posizione, frase)
 
-	def fId (self, documento, frase, posizione):
+	def fId (self, documento, frase, posizione, bis):
 		"""
 		Calcola un id univoco da attribuire a ogni token nella forma 
 			d[numero_documento].s[numero_frase].t[numero_token]
 		"""
 		self.id = 'd' + str(documento) + '.s' + str (frase) + '.t' + str (posizione)
+		
+		if bis>0:
+			self.id+='.b' + str(bis)
+		
 		return self.id
 	
 	def fForm (self, form):
@@ -410,11 +414,11 @@ class Token_target:
 		self.PresenzaDet = self.Det_def or self.Det_indef
 		return self.PresenzaDet
 	
-	def fAntiDip_tipo (self, tok):
+	def fAntiDip_tipo (self, tok, p):
 		#~ h = {}
 		
 		if len(tok.AntiDip)>0:
-			tipo = tok.AntiDip['tipo']
+			tipo = tok.AntiDip.keys()[p]
 			h = tipo
 		else:
 			h = "MISSING_VALUE"
@@ -422,11 +426,12 @@ class Token_target:
 		self.AntiDip_tipo =  Token_target.hasher_antidipendenze.hash (h)
 		return h
 
-	def fAntiDip_lemmi (self, tok):
+	def fAntiDip_lemmi (self, tok, p):
 		#~ h = {}
 		
 		if len(tok.AntiDip)>0:
-			lemma = tok.AntiDip['lemma']
+			d=tok.AntiDip.keys()[p]
+			lemma = tok.AntiDip[d]['lemma']
 			h = lemma
 		else:
 			h = "MISSING_VALUE"
@@ -434,20 +439,22 @@ class Token_target:
 		self.AntiDip_lemmi =  Token_target.hasher_lemmi_antidipendenze.hash (h)
 		return h
 
-	def fAntiDip_PoS (self, tok):
+	def fAntiDip_PoS (self, tok, p):
 		#~ h = {}
 		if len(tok.AntiDip)>0:
-			pos = tok.AntiDip['PoS']
+			d=tok.AntiDip.keys()[p]
+			pos = tok.AntiDip[d]['PoS']
 			h = pos
 		else:
 			h = "MISSING_VALUE"
 		self.AntiDip_PoS =  Token_target.hasher_CPoS.hash(h)
 		return h
 
-	def fAntiDip_preposizione (self, tok):
+	def fAntiDip_preposizione (self, tok, p):
 		#~ h = {}
 		if len(tok.AntiDip)>0:
-			prep = tok.AntiDip['preposizione']
+			d=tok.AntiDip.keys()[p]
+			prep = tok.AntiDip[d]['preposizione']
 			#~ print prep
 			h = prep
 		else:
@@ -455,14 +462,15 @@ class Token_target:
 		self.AntiDip_preposizione =  Token_target.hasher_preposizioni.hash(h)
 		return h
 	
-	def fAntiDip_forzaassociazioni (self, tok):
+	def fAntiDip_forzaassociazioni (self, tok, p):
 		h = {}
 		c=False
 		if len(tok.AntiDip)>0:
-			h = tok.AntiDip['forza_associazione']
-			for k,m in tok.AntiDip['forza_associazione'].items():
-				if m>0:
-					c=True
+			d=tok.AntiDip.keys()[p]
+			h = tok.AntiDip[d]['forza_associazione']
+			#~ for k,m in tok.AntiDip[d]['forza_associazione'].items():
+				#~ if m>0:
+					#~ c=True
 		#~ if c:
 			#~ print tok.AntiDip
 			#~ print h
@@ -470,10 +478,11 @@ class Token_target:
 		self.AntiDip_forzaassociazioni =  h
 		return h
 		
-	def fAntiDip_classeassociazioni (self, tok):
+	def fAntiDip_classeassociazioni (self, tok, p):
 		h = {}
 		if len(tok.AntiDip)>0:
-			h = tok.AntiDip['classe_associazione']
+			d=tok.AntiDip.keys()[p]
+			h = tok.AntiDip[d]['classe_associazione']
 		self.AntiDip_classeassociazioni =  h
 		return h
 
