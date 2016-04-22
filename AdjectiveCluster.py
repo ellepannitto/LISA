@@ -2,13 +2,20 @@
 # coding= utf-8
 
 class AdjectiveCluster:
+"""
+
+"""
 	
 	def __init__(self, file_cluster):
+		"""
+		"""
 		self.mappa={}
 		self.leggi(file_cluster)
 
 
 	def leggi(self,file_cluster):
+		"""
+		"""
 		with open(file_cluster, 'r') as f:
 			for line in f:
 				lista=line.split("\t")

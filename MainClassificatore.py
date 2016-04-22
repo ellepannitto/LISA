@@ -4,6 +4,7 @@
 import Dumper
 import Classifier as CL
 #~ import Classifier_pipeline as CL
+import InfoPlotter as IP
 
 
 class Main:
@@ -25,14 +26,10 @@ class Main:
 			
 			classificatore.classifica_diplemmi(Main._NFOLD)
 			
-			#~ classificatore.espandiMatrice_diplemmi()
-			#~ classificatore.espandiMatrice()
+			#~ Dumper.binary_dump(classificatore, "../dump/classificatori/"+printer.versione)
 			
-			#~ classificatore.splitLabels(Main._NFOLD)
-			#~ classificatore.classifica()
-
-			#~ classificatore.PredictionMatrix.stampa_errori(classificatore.file_output_errori)
-			Dumper.binary_dump(classificatore, "../dump/classificatori/"+printer.versione)
-
+			ip = IP.InfoPlotter ("riepilogo")
+			ip.feed_classificatore (classificatore)
+			
 m=Main()
 	
