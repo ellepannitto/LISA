@@ -25,12 +25,12 @@ class Classifier:
 		
 		self.tags=self.normalizza(printer.tags)
 		
-		self.dati=printer.dati
-		self.dati_diplemmi=printer.dati_diplemmi
+		self.dati=np.array(printer.dati)
+		self.dati_diplemmi=np.array(printer.dati_diplemmi)
 	
-		
 		self.identificatori=np.array(printer.identifiers)
-		self.PredictionMatrix=PM.PredictionMatrix(printer.identifiers, printer.tags)
+		
+		#~ self.PredictionMatrix=PM.PredictionMatrix(printer.identifiers, printer.tags)
 		
 		self.labels=[]
 		
@@ -38,46 +38,110 @@ class Classifier:
 			l=el.split(".")
 			self.labels.append(l[1][1:])
 
-		self.classificatore=[]
-		self.reports=[]
-		
-		
-		#SISTEMARE
-		self.cm=[[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0]]
-		self.cm_normalized=[[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0]]
+		self.predictions=[]
+		self.gold=[]
+		self.ide_test=[]
 		
 		self.tutti_i_possibili_diplemmi = [[el] for el in printer.intestazione[-1][0][1]]
 		
-		#~ print self.tutti_i_possibili_diplemmi
-		#~ m = raw_input ();
 	
+	def classifica_diplemmi (self, k):
+		
+		self.lkf = cross_validation.LabelKFold(self.labels, n_folds=k)
+		
+		lista_card=[len(self.intestazione[p][0][1]) for p in self.indici_da_trasformare]
+		
+		self.enc = preprocessing.OneHotEncoder(n_values=lista_card, categorical_features=self.indici_da_trasformare, dtype=np.int)
+		
+		self.enc.fit(self.dati[0])
+		
+		self.clf = svm.LinearSVC()
+		
+		for train_index, test_index in self.lkf:
+			
+			
+			
+			D_train, D_test = self.dati[train_index], self.dati[test_index]	
+			D_diplemmi_train, D_diplemmi_test = self.dati_diplemmi[train_index], self.dati_diplemmi[test_index]	
+			
+			
+			D_train, D_test = self.enc.transform(D_train), self.enc.transform(D_test)
+			D_train_sparse, D_test_sparse = scipy.sparse.csr_matrix (D_train), scipy.sparse.csr_matrix (D_test)
+			D_diplemmi_train_sparse, D_diplemmi_test_sparse = self.espandiMatrice_diplemmi (D_diplemmi_train), self.espandiMatrice_diplemmi (D_diplemmi_test)
+			X_train, X_test = scipy.sparse.hstack ([D_train_sparse, D_diplemmi_train_sparse]), scipy.sparse.hstack ([D_test_sparse, D_diplemmi_test_sparse])
+			
+			#~ np.set_printoptions(threshold='nan')
+			#~ np.set_printoptions(linewidth='nan')
+			
+			#~ print "Debug accostamento matrici (D train)"
+			#~ print D_train_sparse.todense()
+			
+			#~ print "Debug accostamento matrici (D diplemmi train)"
+			#~ print D_diplemmi_train_sparse.todense()
+			
+			#~ print "Debug accostamento matrici (X train)"
+			#~ print X_train.todense()
+			
+			
+			
+			
+			
+			
+			y_train, y_test = self.tags[train_index], self.tags[test_index]
+			ide_train, ide_test = self.identificatori[train_index], self.identificatori[test_index]
+				
+			self.clf.fit(X_train, y_train)
+			
+			
+			self.predictions.append ( self.clf.predict (X_test) )
+			self.gold.append ( y_test )
+			self.ide_test.append ( ide_test )
+	
+	
+	def classifica (self, k):
+		
+		self.lkf = cross_validation.LabelKFold(self.labels, n_folds=k)
+		
+		lista_card=[len(self.intestazione[p][0][1]) for p in self.indici_da_trasformare]
+		
+		self.enc = preprocessing.OneHotEncoder(n_values=lista_card, categorical_features=self.indici_da_trasformare, dtype=np.int)
+		
+		self.enc.fit(self.dati[0])
+		
+		self.clf = svm.LinearSVC()
+		
+		for train_index, test_index in self.lkf:
+			
+			X_train, X_test = self.dati[train_index], self.dati[test_index]	
+			
+			
+			y_train, y_test = self.tags[train_index], self.tags[test_index]
+			ide_train, ide_test = self.identificatori[train_index], self.identificatori[test_index]
+				
+			self.clf.fit(X_train, y_train)
+		
+			self.predictions.append ( self.clf.predict (X_test) )
+			self.gold.append ( y_test )
+			self.ide_test.append ( ide_test )
+			
+			
 	
 	#vedilo come uno pseudocodice
-	def espandiMatrice_diplemmi (self):
+	def espandiMatrice_diplemmi (self, dati_diplemmi):
+
 		self.enc_diplemmi=preprocessing.OneHotEncoder()
 		self.enc_diplemmi.fit(self.tutti_i_possibili_diplemmi)
 		
 		lista_di_liste=[]
 		i=0
-		
-		#~ print "DEBUG: tutti i dati:", self.dati
-		#~ print "DEBUG: tutti i dati diplemmi:", self.dati_diplemmi
+	
+		#~ print "DEBUG: dati dip lemmi: ",dati_diplemmi
 		
 		tutti_vuoti=False
 		while not tutti_vuoti:
 			tutti_vuoti=True
 			lista_i=[]
-			for el in self.dati_diplemmi:
+			for el in dati_diplemmi:
 				if i<len( el ):
 					tutti_vuoti=False
 					lista_i.append([el[i]])
@@ -87,23 +151,31 @@ class Classifier:
 				lista_di_liste.append(lista_i)
 				#~ print "DEBUG: lista numero",i, lista_i
 				i += 1
-			
+	
 		lista_di_matrici=[]
 		
 		width = len(self.tutti_i_possibili_diplemmi)
-		height = len(self.dati)
+		height = len(dati_diplemmi)
 		
-		#~ print "Debug: dimensioni matrice ",width, "x", height
+		#print "Debug: dimensioni matrice ",height, "x", width
 		
-		self.matrice_sparsa_diplemmi = scipy.sparse.bsr_matrix ((height,width))
+		matrice_sparsa_diplemmi = scipy.sparse.csr_matrix ((height,width))
 		
 		for lista_i in lista_di_liste:
 			matrice_i = self.enc_diplemmi.transform(lista_i)
-			#~ print "Debug: matrice trasformata ",matrice_i.toarray()
-			self.matrice_sparsa_diplemmi += matrice_i
-		#~ print "Debug: matrice somma ",self.matrice_sparsa_diplemmi.toarray()
-				
+		#	print "Debug: lista ",lista_i, "matrice trasformata"
+		#	print matrice_i.toarray()
+			matrice_sparsa_diplemmi += matrice_i
+		#~ print "Debug: matrice somma "
+		#~ print matrice_sparsa_diplemmi.toarray()
+
+		matrice_senza_prima_colonna = scipy.sparse.csr_matrix(matrice_sparsa_diplemmi)[:,range(1,width)]
 		
+		#~ print "Debug: matrice somma senza prima colonna"
+		#~ print matrice_senza_prima_colonna.toarray()
+
+				
+		return matrice_senza_prima_colonna
 		
 	def normalizza(self, tags):
 		self.mappa_sensi={'ABSTRACT':1, 'ANIMATE':2, 'OBJECT':3, 'LOCATION':4, 'EVENT':5, 'O':6}
@@ -114,18 +186,6 @@ class Classifier:
 			ret.append(self.mappa_sensi[el])
 			
 		return np.array(ret)
-	
-	def splitLabels(self, k):
-		
-		#self.lkf=cross_validation.LabelKFold(self.labels, n_folds=k)
-		self.lkf=cross_validation.LabelKFold(self.labels, n_folds=2)
-		
-		self.train_labels=[]
-		self.test_labels=[]
-		
-		for train, test in self.lkf:
-			self.train_labels.append(train)
-			self.test_labels.append(test)
 		
 	
 	def estraiIndiciClass(self):
@@ -141,143 +201,4 @@ class Classifier:
 				i+=1
 		
 		self.indici_da_trasformare=self.indici_da_trasformare[:-1]
-		
-		#~ print self.intestazione
-		#~ print self.indici_da_trasformare
-		
-	def espandiMatrice (self):
-		
-		#~ print self.indici_da_trasformare
-		#~ print self.intestazione[self.indici_da_trasformare[0]]
-		lista_card=[len(self.intestazione[p][0][1]) for p in self.indici_da_trasformare]
-		
-		#~ print lista_card
-		
-		self.enc=preprocessing.OneHotEncoder(n_values=lista_card, categorical_features=self.indici_da_trasformare, dtype=np.int)
-		self.enc.fit(self.dati[0])
-		
-		
-		print "HO FINITO L'ENCODING"
-		
-
-	def classifica(self):
-			
-		matrice_sparsa_altre_feature = scipy.sparse.bsr_matrix (self.dati)
-		#~ print "Debug: matrice altre feature ",matrice_sparsa_altre_feature.toarray()	
-		
-		self.dati = scipy.sparse.hstack ([matrice_sparsa_altre_feature, self.matrice_sparsa_diplemmi])
-		#~ print "Debug: matrice composta ",self.dati.toarray()
-			
-		i=0
-		for train_index, test_index in self.lkf:
-			self.classificatore.append( svm.LinearSVC() )
-			
-			#~ print "train_index", train_index
-			#~ print "test_index", test_index
-			#~ m = raw_input ()
-			
-			ide_train = []
-			ide_test = []
-			
-			lista_x = []
-			lista_y = []
-			
-			for j in train_index:
-				lista_x.append (self.dati.getrow(j))
-				ide_train.append (self.identificatori[j])
-				lista_y.append (self.tags[j])
-				if j%500 == 0 :
-					print "lette",j,"righe di train"
-			
-			print "DEBUG: finito leggere righe train"
-			
-			X_train = scipy.sparse.vstack (lista_x)
-			y_train = lista_y
-
-			lista_x = []
-			lista_y = []
-			
-			for j in test_index:
-				lista_x.append (self.dati.getrow(j))
-				ide_test.append (self.identificatori[j])
-				lista_y.append (self.tags[j])
-				if j%500 == 0 :
-					print "lette",j,"righe di test"
-
-
-			print "DEBUG: finito leggere righe train"
-			
-			X_test = scipy.sparse.vstack (lista_x)
-			y_test = lista_y
-			
-			#~ ide_train, ide_test=self.identificatori[train_index], self.identificatori[test_index]
-			
-			#~ X_train, X_test = self.dati[train_index], self.dati[test_index]
-			#~ y_train, y_test = self.tags[train_index], self.tags[test_index]
-			
-			#~ X_train=self.enc.transform(X_train)
-			#~ X_test=self.enc.transform(X_test)
-			
-			self.classificatore[i].fit(X_train, y_train)
-			
-			predictions=self.classificatore[i].predict(X_test)
-			
-			self.PredictionMatrix.add_fold(list(predictions), list(ide_test), i)
-
-			self.reports.append( metrics.classification_report(y_test, predictions) )
-			
-			def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
-				plt.imshow(cm, interpolation='nearest', cmap=cmap)
-				plt.title(title)
-				plt.colorbar()
-				tick_marks = np.arange(6)
-				plt.xticks(tick_marks, [1,2,3,4,5,6] , rotation=45)
-				plt.yticks(tick_marks, [1,2,3,4,5,6])
-				plt.tight_layout()
-				plt.ylabel('True label')
-				plt.xlabel('Predicted label')
-			
-			
-			matrice = metrics.confusion_matrix(y_test, predictions)
-			matrice_normalized = matrice.astype('float') / matrice.sum(axis=1)[:, np.newaxis]
-			
-			for p in range(len(self.cm)):
-				self.cm[p]=[self.cm[p][j]+matrice[p][j] for j in range(len(self.cm[p]))]
-
-			
-			np.set_printoptions(precision=2)
-			print('Confusion matrix, without normalization')
-			print(self.cm)
-			plt.figure()
-			plot_confusion_matrix(self.cm)
-			plt.show()
-			#~ self.file_output.write ( self.stampa_matrice( matrice ) )
-			#~ self.file_output.write ( "\n" )
-			
-			i+=1
-			
-	def stampa_matrice (self, matrice):
-		self.inverso_mappa={v:k for k,v in self.mappa_sensi.items()}
-		
-		s="\tABSTRACT\tANIMATE\tOBJECT\tLOCATION\tEVENT\tO\n"
-		
-		for i in range( len(matrice)):
-			
-			el=matrice[i]
-			s+=self.inverso_mappa[i+1]+"\t"
-			
-			for k in el:
-				#~ print k
-				s+=str(k)+"\t"
-			s+="\n"
-		return s	
-
-
-	def confronta ( self, gold, predictions, ide, f):
-		self.file_output_errori.write("FOLD: "+str(f)+"\n")
-		self.file_output_errori.write("IDE\tGOLD\tPREDICTED"+"\n")
-		
-		for i in range(len(gold)):
-			if gold[i]!=predictions[i]:
-				self.file_output_errori.write ( ide[i]+"\t"+self.inverso_mappa[gold[i]]+"\t"+self.inverso_mappa[predictions[i]]+"\n" )
 		

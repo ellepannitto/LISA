@@ -2,8 +2,8 @@
 # coding= utf-8
 
 import Dumper
-#~ import Classifier as CL
-import Classifier_pipeline as CL
+import Classifier as CL
+#~ import Classifier_pipeline as CL
 
 
 class Main:
@@ -14,14 +14,16 @@ class Main:
 	_NFOLD=2
 	
 	def __init__(self):
+		
 		for file_printer in Main.lista_file_printer:
 			
 			printer=Dumper.binary_load(file_printer)
+			
 			classificatore=CL.Classifier(printer)
 			
 			classificatore.estraiIndiciClass()
 			
-			classificatore.perform(Main._NFOLD)
+			classificatore.classifica_diplemmi(Main._NFOLD)
 			
 			#~ classificatore.espandiMatrice_diplemmi()
 			#~ classificatore.espandiMatrice()
@@ -30,7 +32,7 @@ class Main:
 			#~ classificatore.classifica()
 
 			#~ classificatore.PredictionMatrix.stampa_errori(classificatore.file_output_errori)
-			#~ Dumper.binary_dump(classificatore, "../dump/classificatori/"+printer.versione)
+			Dumper.binary_dump(classificatore, "../dump/classificatori/"+printer.versione)
 
 m=Main()
 	
