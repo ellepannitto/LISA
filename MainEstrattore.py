@@ -21,21 +21,22 @@ import Dumper
 
 class Main:
 		
-	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
-	_PARSE_CORPUS_STD = "../dati/corpus/corpus_testing"
+	_PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
+	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_testing"
 	_PARSE_REPUBBLICA_STD = "../dati/repubblicaFreqs/sorted.repubblica.sensitive.lemmasAndPos"
 	_PARSE_MAPPA_STD = "../dati/Mapping/fillers2LSO-merged.map"
 	_PARSE_DEPFILLER_STD = "../dati/Patterns/evalita2011.lemmaDepFiller.ass"
 	_PARSE_DEPCLASS_STD = "../dati/Patterns/evalita2011.lemmaDepClass.freqs"
 	_PARSE_CLUSTERS_STD = "../dati/adjClasses/adjs2WNclusters-merged.txt"
-	#~ _PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
-	_PARSE_PATTERN_STD = "../dati/Patterns/primo_documento.sp"
+	_PARSE_PATTERN_STD = "../dati/Patterns/evalita2011.selected.pat.sp"
+	#~ _PARSE_PATTERN_STD = "../dati/Patterns/primo_documento.sp"
 	#~ _PARSE_FEATURES_STD = "../dati/Config/lista_features_unitarie"
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
-	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
+	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11", "../dati/Config/v_13", "../dati/Config/v_14" ]
+	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_10" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = [ "../dati/Config/test/t_antidip", "../dati/Config/test/t_associazioni_testa", "../dati/Config/test/t_codip", "../dati/Config/test/t_dip", "../dati/Config/test/t_diplemmi", "../dati/Config/test/t_distribuzionali", "../dati/Config/test/t_lso", "../dati/Config/test/t_modadj", "../dati/Config/test/t_morfologia", "../dati/Config/test/t_NER_e_filtri", "../dati/Config/test/t_PoS"]
-	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_12"]
+	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_lucio"]
 
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"
 	_DUMP_REPUBBLICA_STD = "../dump/sorted.repubblica.sensitive.lemmasAndPos"
@@ -127,20 +128,20 @@ class Main:
 			printer.produci_matrice(configurazione.versione, lista_features_atomiche, lista_da_stampare)
 			
 			
-			Dumper.binary_dump (printer, "../arff/matrici/"+printer.versione+"_primodocumento")
+			Dumper.binary_dump (printer, "../arff/matrici/"+printer.versione)
 			
 			
 			
 
 if __name__ == "__main__":
 	m = Main ()
-	m.comportamento ("corpus", Main._PARSE)
-	#~ m.comportamento ("repubblica", Main._DUMP)
-	#~ m.comportamento ("mappa", Main._DUMP)
-	#~ m.comportamento ("depfiller", Main._DUMP)
-	#~ m.comportamento ("depclass", Main._CONF)
-	#~ m.comportamento ("cluster", Main._CONF)
-	m.comportamento ("pattern", Main._PARSE)
-	m.comportamento ("features", Main._PARSE)
+	m.comportamento ("corpus", Main._DUMP)
+	m.comportamento ("repubblica", Main._DUMP)
+	m.comportamento ("mappa", Main._DUMP)
+	m.comportamento ("depfiller", Main._DUMP)
+	m.comportamento ("depclass", Main._DUMP)
+	m.comportamento ("cluster", Main._DUMP)
+	m.comportamento ("pattern", Main._DUMP)
+	m.comportamento ("features", Main._DUMP)
 	m.comportamento ("configurazione", Main._PARSE)
 	m.perform ()

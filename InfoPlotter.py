@@ -1,15 +1,18 @@
 #!/usr/bin/python
+# coding= utf-8
 
 import sklearn.metrics
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 def avg(l): return sum(l)/len(l)
 
 def list_of_average ( lista ):
 	avgs=[]
 	
-	for i in range (lista[0]):
+	for i in range(len (lista[0])):
+		avgs.append(0)
 		for l in lista:
 			avgs[i] += l[i]
 		avgs[i] /= len (lista)
@@ -21,12 +24,40 @@ def get_normalized_confusion_matrix (cm):
 	restituisce la confusion matrix associata ad una confusion matrix data in input
 	'''
 	cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+	
 	return cm_normalized
+
+def matrix_pprint (matrix, label_x=None, label_y=None):
+	
+	#~ print "parametro",matrix
+	
+	str_ret = ""
+	
+	if label_x is not None:
+		if label_y is not None:
+			str_ret = '{:10s}'.format ("")
+		for lbx in label_x:
+			  str_ret += '{:10s}'.format (str(lbx))
+		str_ret += "\n"
+	
+	for i in range (len(matrix)):
+		row = matrix[i]
+		#~ print "riga",i,row
+		
+		if label_y is not None:
+			str_ret += '{:10s}'.format (str(label_y[i]))
+		
+		for j in range (len(row)):
+			str_ret += '{:10s}'.format ("%0.2f" % row[j]) 
+		str_ret += "\n"
+		
+	return str_ret
+
 
 class InfoPlotter:
 	''' visualizza e stampa su un file il grafico riassuntivo della k-fold cross validation'''
 	
-	def __init__ (self, file_riepilogo=None):
+	def __init__ (self, file_riepilogo=None, ver=None):
 		'''
 		inizializza un oggetto vuoto
 		 file_riepilogo: nome del file sul quale stampare il riepilogo. Se None, verrà visualizzato il grafico senza stampare alcun riepilogo.
@@ -40,6 +71,11 @@ class InfoPlotter:
 		self.fmeasures = []
 		self.confusion_matrices = []
 		self.folds = 0;
+		self.tags = ['ABSTRACT', 'ANIMATE', 'OBJECT', 'LOCATION', 'EVENT', 'O']
+		self.versione = ver
+		self.precisions_avg = []
+		self.recalls_avg = []
+		self.fmeasures_avg = []
 		
 	def feed_one_fold (self, pred, gold):
 		'''
@@ -53,11 +89,23 @@ class InfoPlotter:
 		precision = sklearn.metrics.precision_score (gold,pred, average=None)
 		recall = sklearn.metrics.recall_score (gold,pred, average=None)
 		fmeasure = sklearn.metrics.recall_score (gold,pred, average=None)
+
+		precision_avg = sklearn.metrics.precision_score (gold,pred, average="weighted")
+		recall_avg = sklearn.metrics.recall_score (gold,pred,average="weighted")
+		fmeasure_avg = sklearn.metrics.recall_score (gold,pred,average="weighted")
+		
+		
 		cm = sklearn.metrics.confusion_matrix ( gold, pred )
 		self.accuracies.append (accuracy)
+		
 		self.precisions.append (precision)
 		self.recalls.append (recall)
 		self.fmeasures.append (fmeasure)
+
+		self.precisions_avg.append (precision_avg)
+		self.recalls_avg.append (recall_avg)
+		self.fmeasures_avg.append (fmeasure_avg)
+		
 		self.confusion_matrices.append (cm)
 		self.folds += 1
 	
@@ -76,60 +124,107 @@ class InfoPlotter:
 		self.feed_k_fold (classificatore.predictions, classificatore.gold)
 	
 	def average_accuracy ( self ):
-		assert len (self.accuracies)>0 "[InfoPlotter] get_average_accuracy : feed with data first"
+		assert len (self.accuracies)>0, "[InfoPlotter] get_average_accuracy : feed with data first"
 		return avg (self.accuracies) 
 
 	def average_precisions ( self ):
-		assert len (self.precisions)>0 "[InfoPlotter] get_average_precisions : feed with data first"
+		assert len (self.precisions)>0, "[InfoPlotter] get_average_precisions : feed with data first"
 		return list_of_average (self.precisions)
 	
 	def average_recalls ( self ):
-		assert len (self.recalls)>0 "[InfoPlotter] get_average_recalls : feed with data first"
+		assert len (self.recalls)>0, "[InfoPlotter] get_average_recalls : feed with data first"
 		return list_of_average (self.recalls)
 	
 	def average_fmeasures ( self ):
-		assert len (self.fmeasures)>0 "[InfoPlotter] get_average_fmeasures : feed with data first"
+		assert len (self.fmeasures)>0, "[InfoPlotter] get_average_fmeasures : feed with data first"
 		return list_of_average (self.fmeasures)
 		
 	
 	def normalize_confusion_matrices ( self ):
-		sum_cm=[[0]*len(self.confusion_matrices[0])]*len(self.confusion_matrices)
 		
-		for i in range(len(self.confusion_matrices)):
-			for j in range(len(self.confusion_matrices[i])):
-				sum_cm+=self.confusion_matrices[i][j]
-				
+		sum_cm=copy.deepcopy(self.confusion_matrices[0])
+		
+		#~ print "SOMMA_INIZIALE", sum_cm
+		
+		for mat in self.confusion_matrices[1:]:
+			
+			#~ print "DA SOMMARE:", self.confusion_matrices[i:]
+			for i in range(len(mat)):
+				for j in range (len(mat[i])):
+					sum_cm[i][j]+=mat[i][j]
+						
 		return get_normalized_confusion_matrix(sum_cm)
 			
 			
-	def plot_confusion_matrix (cm, title='Confusion matrix', cmap=plt.cm.Blues):
+	def plot_confusion_matrix (self, cm, title='Confusion matrix', cmap=plt.cm.Blues):
 		plt.figure()
 		plt.imshow(cm, interpolation='nearest', cmap=cmap)
 		plt.title(title)
 		plt.colorbar()
 		tick_marks = np.arange(len(cm[0]))
-		#~ plt.xticks(tick_marks, iris.target_names, rotation=45)
-		#~ plt.yticks(tick_marks, iris.target_names)
+		plt.xticks(tick_marks, self.tags, rotation=45)
+		plt.yticks(tick_marks, self.tags)
 		plt.tight_layout()
 		plt.ylabel('True label')
 		plt.xlabel('Predicted label')
-		plt.show ()
+		
+		plt.savefig("plot_"+self.versione)
+		#~ plt.show ()
+		
 	
 	def print_riepilogo (self):
+		np.set_printoptions(precision=2)
+		
 		normalized_cm = self.normalize_confusion_matrices ()			
 		if self.file_riepilogo is not None:
 			fout = open (self.file_riepilogo, "w")
 			
-			accuracys = self.average_accuracy ()
+			accuracy = self.average_accuracy ()
+			
 			precisions = self.average_precisions ()
 			recalls = self.average_recalls ()
 			fmeasures = self.average_fmeasures ()
-			
-			fout.write ( "confusion matrix:\n" + str(normalized_cm) + "\n" )
-			fout.write ( "accuracy: " + str(accuracy) + "\n" )
-			fout.write ( "precisions: " + str(precisions) + "\n" )
-			fout.write ( "recalls: " + str(recalls) + "\n" )
-			fout.write ( "fmeasures: " + str(fmeasures) + "\n" )
-		
-		plot_confusion_matrix (normalized_cm)
 
+			avg_precision = avg(self.precisions_avg)
+			avg_recall = avg(self.recalls_avg)
+			avg_fmeasure = avg(self.fmeasures_avg)
+			
+			#~ avg_precision = 0
+			#~ avg_recall = 0
+			#~ avg_fmeasure = 0
+			
+			avgs = [avg_precision, avg_recall, avg_fmeasure]
+			
+			matrice_statistica = [[precisions[i],recalls[i],fmeasures[i]] for i in range(len(precisions))] + [avgs]
+			
+			str_riepilogo = "RIEPILOGO VERSIONE "+str(self.versione)+"\n"+\
+							"numero fold: "+ str(self.folds)+"\n"+\
+							"tipo classificatore: SVC PolyKernel, degree 2\n"+\
+							"\n"+\
+							"Confusion matrix:\n"+\
+							matrix_pprint (normalized_cm, self.tags, self.tags)+"\n"+\
+							"\n"+\
+							"Accuracy: "+str(accuracy)+"\n"+\
+							"\n"+\
+							matrix_pprint ( matrice_statistica ,["Precision", "Recall","F-Measure"], self.tags+["AVG"])+"\n"+\
+							"\n"
+			
+			fout.write ( str_riepilogo )
+							
+			
+		
+		self.plot_confusion_matrix (normalized_cm, title="Confusion Matrix versione "+self.versione)
+
+if __name__ == "__main__":
+	matrix = [ [0, 1, 2],
+			   [3, 4, 5],
+			   [6, 7, 8],
+			   [9, 10, 11]]
+	label_x = ["col1","col2","col3"]
+	label_y = ["rowA","rowB","rowC","rowD"]
+	
+	print "prova matrix_pprint"
+	print matrix_pprint ( matrix,label_x, label_y )
+	print matrix_pprint ( matrix,None, label_y )
+	print matrix_pprint ( matrix,label_x, None )
+	print matrix_pprint ( matrix,None, None )

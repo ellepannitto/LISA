@@ -23,6 +23,9 @@ class Classifier:
 		
 		self.intestazione=printer.intestazione
 		
+		#~ print self.intestazione
+		#~ m=raw_input()
+		
 		self.tags=self.normalizza(printer.tags)
 		
 		self.dati=np.array(printer.dati)
@@ -36,7 +39,7 @@ class Classifier:
 		
 		for el in self.identificatori:
 			l=el.split(".")
-			self.labels.append(l[1][1:])
+			self.labels.append(l[0][1:])
 
 		self.predictions=[]
 		self.gold=[]
@@ -49,17 +52,18 @@ class Classifier:
 		
 		self.lkf = cross_validation.LabelKFold(self.labels, n_folds=k)
 		
-		lista_card=[len(self.intestazione[p][0][1]) for p in self.indici_da_trasformare]
 		
-		self.enc = preprocessing.OneHotEncoder(n_values=lista_card, categorical_features=self.indici_da_trasformare, dtype=np.int)
-		
-		self.enc.fit(self.dati[0])
+		self.enc = preprocessing.OneHotEncoder(categorical_features=self.indici_da_trasformare, dtype=np.int)		
+		self.enc.fit(self.dati)
 		
 		self.clf = svm.LinearSVC()
 		
+		numero_fold = 0
+		
 		for train_index, test_index in self.lkf:
 			
-			
+			print "fold numero", numero_fold
+			numero_fold += 1
 			
 			D_train, D_test = self.dati[train_index], self.dati[test_index]	
 			D_diplemmi_train, D_diplemmi_test = self.dati_diplemmi[train_index], self.dati_diplemmi[test_index]	
@@ -67,6 +71,7 @@ class Classifier:
 			
 			D_train, D_test = self.enc.transform(D_train), self.enc.transform(D_test)
 			D_train_sparse, D_test_sparse = scipy.sparse.csr_matrix (D_train), scipy.sparse.csr_matrix (D_test)
+			
 			D_diplemmi_train_sparse, D_diplemmi_test_sparse = self.espandiMatrice_diplemmi (D_diplemmi_train), self.espandiMatrice_diplemmi (D_diplemmi_test)
 			X_train, X_test = scipy.sparse.hstack ([D_train_sparse, D_diplemmi_train_sparse]), scipy.sparse.hstack ([D_test_sparse, D_diplemmi_test_sparse])
 			
@@ -83,10 +88,6 @@ class Classifier:
 			#~ print X_train.todense()
 			
 			
-			
-			
-			
-			
 			y_train, y_test = self.tags[train_index], self.tags[test_index]
 			ide_train, ide_test = self.identificatori[train_index], self.identificatori[test_index]
 				
@@ -100,29 +101,47 @@ class Classifier:
 	
 	def classifica (self, k):
 		
+		#~ print self.labels
+		
 		self.lkf = cross_validation.LabelKFold(self.labels, n_folds=k)
 		
-		lista_card=[len(self.intestazione[p][0][1]) for p in self.indici_da_trasformare]
 		
-		self.enc = preprocessing.OneHotEncoder(n_values=lista_card, categorical_features=self.indici_da_trasformare, dtype=np.int)
+		self.enc = preprocessing.OneHotEncoder(categorical_features=self.indici_da_trasformare, dtype=np.int)
+		self.enc.fit(self.dati)
 		
-		self.enc.fit(self.dati[0])
+		#~ self.clf = svm.LinearSVC()
+		self.clf = svm.SVC(kernel="linear")
 		
-		self.clf = svm.LinearSVC()
+		numero_fold = 0
 		
 		for train_index, test_index in self.lkf:
 			
-			X_train, X_test = self.dati[train_index], self.dati[test_index]	
+			print "fold numero", numero_fold
+			numero_fold += 1
+			
+			#~ print "train index: lunghezza",len(train_index), train_index
+			#~ print "test index: lunghezza",len(test_index), test_index
+			
+			dati_train, dati_test = self.dati[train_index], self.dati[test_index]
+			
+			#~ np.set_printoptions(threshold='nan')
+			#~ np.set_printoptions(linewidth='nan')
 			
 			
+			
+			X_train, X_test = self.enc.transform (dati_train), self.enc.transform (dati_test)
 			y_train, y_test = self.tags[train_index], self.tags[test_index]
 			ide_train, ide_test = self.identificatori[train_index], self.identificatori[test_index]
 				
 			self.clf.fit(X_train, y_train)
 		
-			self.predictions.append ( self.clf.predict (X_test) )
+			preds = self.clf.predict (X_test)
+			self.predictions.append ( preds )
 			self.gold.append ( y_test )
 			self.ide_test.append ( ide_test )
+			
+			#~ print "classificatore:"
+			#~ print metrics.confusion_matrix(y_test, preds)
 			
 			
 	
@@ -191,6 +210,7 @@ class Classifier:
 	def estraiIndiciClass(self):
 		
 		self.indici_da_trasformare=[]
+		#~ self.lista_card
 		
 		i=0
 		for el in self.intestazione:
@@ -200,5 +220,5 @@ class Classifier:
 					self.indici_da_trasformare.append(i)
 				i+=1
 		
-		self.indici_da_trasformare=self.indici_da_trasformare[:-1]
+		#~ self.indici_da_trasformare=self.indici_da_trasformare[:-1]
 		
