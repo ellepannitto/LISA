@@ -155,6 +155,7 @@ class Token_target:
 			lemma = "sp"
 		#filtro su frequenza
 		elif lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE:
+		#~ if lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE:
 			lemma = "no_lemma"	
 		#hash
 		self.lemma = Token_target.hasher_lemmas.hash (lemma)

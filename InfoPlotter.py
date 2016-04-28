@@ -6,7 +6,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 
-def avg(l): return sum(l)/len(l)
+#~ def avg(l, weights):
+	
+	#~ return sum([l[i]*weights[i] for i in range(len(l))])/sum(weights)
+def avg(l):
+	
+	return sum(l)/len(l)
 
 def list_of_average ( lista ):
 	avgs=[]
@@ -27,7 +32,7 @@ def get_normalized_confusion_matrix (cm):
 	
 	return cm_normalized
 
-def matrix_pprint (matrix, label_x=None, label_y=None):
+def matrix_pprint (matrix, label_x=None, label_y=None, formato="%0.2f"):
 	
 	#~ print "parametro",matrix
 	
@@ -48,7 +53,7 @@ def matrix_pprint (matrix, label_x=None, label_y=None):
 			str_ret += '{:10s}'.format (str(label_y[i]))
 		
 		for j in range (len(row)):
-			str_ret += '{:10s}'.format ("%0.2f" % row[j]) 
+			str_ret += '{:10s}'.format (formato % row[j]) 
 		str_ret += "\n"
 		
 	return str_ret
@@ -77,6 +82,8 @@ class InfoPlotter:
 		self.recalls_avg = []
 		self.fmeasures_avg = []
 		
+		self.weights = [len(el) for el in self.preds]
+		
 	def feed_one_fold (self, pred, gold):
 		'''
 		fornisce i dati di una classificazione
@@ -88,7 +95,7 @@ class InfoPlotter:
 		accuracy = sklearn.metrics.accuracy_score (gold,pred)
 		precision = sklearn.metrics.precision_score (gold,pred, average=None)
 		recall = sklearn.metrics.recall_score (gold,pred, average=None)
-		fmeasure = sklearn.metrics.recall_score (gold,pred, average=None)
+		fmeasure = sklearn.metrics.f1_score (gold,pred, average=None)
 
 		precision_avg = sklearn.metrics.precision_score (gold,pred, average="weighted")
 		recall_avg = sklearn.metrics.recall_score (gold,pred,average="weighted")
@@ -154,6 +161,21 @@ class InfoPlotter:
 					sum_cm[i][j]+=mat[i][j]
 						
 		return get_normalized_confusion_matrix(sum_cm)
+		
+	def sum_confusion_matrices ( self ):
+		
+		sum_cm=copy.deepcopy(self.confusion_matrices[0])
+		
+		#~ print "SOMMA_INIZIALE", sum_cm
+		
+		for mat in self.confusion_matrices[1:]:
+			
+			#~ print "DA SOMMARE:", self.confusion_matrices[i:]
+			for i in range(len(mat)):
+				for j in range (len(mat[i])):
+					sum_cm[i][j]+=mat[i][j]
+						
+		return sum_cm
 			
 			
 	def plot_confusion_matrix (self, cm, title='Confusion matrix', cmap=plt.cm.Blues):
@@ -161,6 +183,7 @@ class InfoPlotter:
 		plt.imshow(cm, interpolation='nearest', cmap=cmap)
 		plt.title(title)
 		plt.colorbar()
+		plt.clim(0,1)
 		tick_marks = np.arange(len(cm[0]))
 		plt.xticks(tick_marks, self.tags, rotation=45)
 		plt.yticks(tick_marks, self.tags)
@@ -168,13 +191,15 @@ class InfoPlotter:
 		plt.ylabel('True label')
 		plt.xlabel('Predicted label')
 		
-		plt.savefig("plot_"+self.versione)
+		plt.savefig("../riepilogo/plot_"+self.versione)
 		#~ plt.show ()
 		
 	
 	def print_riepilogo (self):
 		np.set_printoptions(precision=2)
 		
+		
+		cm = self.sum_confusion_matrices ()
 		normalized_cm = self.normalize_confusion_matrices ()			
 		if self.file_riepilogo is not None:
 			fout = open (self.file_riepilogo, "w")
@@ -199,15 +224,17 @@ class InfoPlotter:
 			
 			str_riepilogo = "RIEPILOGO VERSIONE "+str(self.versione)+"\n"+\
 							"numero fold: "+ str(self.folds)+"\n"+\
-							"tipo classificatore: SVC PolyKernel, degree 2\n"+\
+							"tipo classificatore: LinearSVC\n"+\
 							"\n"+\
 							"Confusion matrix:\n"+\
 							matrix_pprint (normalized_cm, self.tags, self.tags)+"\n"+\
 							"\n"+\
-							"Accuracy: "+str(accuracy)+"\n"+\
+							matrix_pprint (cm, self.tags, self.tags, "%.0f")+"\n"+\
 							"\n"+\
-							matrix_pprint ( matrice_statistica ,["Precision", "Recall","F-Measure"], self.tags+["AVG"])+"\n"+\
-							"\n"
+							"Accuracy: "+str(accuracy)+"\n"
+							#~ "\n"+\
+							#~ matrix_pprint ( matrice_statistica ,["Precision", "Recall","F-Measure"], self.tags+["AVG"])+"\n"+\
+							#~ "\n"
 			
 			fout.write ( str_riepilogo )
 							

@@ -109,8 +109,8 @@ class Classifier:
 		self.enc = preprocessing.OneHotEncoder(categorical_features=self.indici_da_trasformare, dtype=np.int)
 		self.enc.fit(self.dati)
 		
-		#~ self.clf = svm.LinearSVC()
-		self.clf = svm.SVC(kernel="linear")
+		self.clf = svm.LinearSVC()
+		#~ self.clf = svm.SVC(kernel="linear")
 		
 		numero_fold = 0
 		
