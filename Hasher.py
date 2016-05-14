@@ -2,6 +2,7 @@
 #coding: utf-8
 
 import codecs
+import Dumper
 
 class Hasher:
 	"""
@@ -13,8 +14,8 @@ class Hasher:
 		"""
 		Costruttore di default
 		"""
-		self.next_hash = 1
-		self.dizionario_hash = {"MISSING_VALUE":0}
+		self.dizionario_hash = {"MISSING_VALUE":0,"sp":1}
+		self.next_hash = len(self.dizionario_hash)
 	
 	def hash (self, s):
 		"""
@@ -32,6 +33,13 @@ class Hasher:
 			self.next_hash += 1
 		return self.dizionario_hash[s]
 
+	def add_hash (self, s):
+		try:
+			self.dizionario_hash[s]=int(s)
+		except:
+			self.dizionario_hash[s]=self.next_hash
+			self.next_hash+=1
+
 	def unhash (self, i):
 		for k, v in self.dizionario_hash.items():
 			if v==i:
@@ -45,6 +53,9 @@ class Hasher:
 		
 		for key, val in self.dizionario_hash.items():
 			file_output.write(key.decode("utf-8")+"\t"+str(val)+"\n")
+		
+		Dumper.binary_dump (self, nome_file+".rawobject")
+		
 
 	
 def test_hash ():

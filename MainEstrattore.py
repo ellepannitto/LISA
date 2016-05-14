@@ -14,7 +14,7 @@ import ConfigReader as CR
 import Converter as CVT
 import TypeResolver as TR
 import ArffPrinter as AP
-import MatrixPrinter as MP
+import MatrixPrinter_backup_diplemmi as MP
 #~ import Classifier as CL
 
 import Dumper
@@ -34,7 +34,7 @@ class Main:
 	_PARSE_FEATURES_STD = "../dati/Config/lista_features"
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11", "../dati/Config/v_13", "../dati/Config/v_14" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = [ "../dati/Config/test/t_antidip", "../dati/Config/test/t_associazioni_testa", "../dati/Config/test/t_codip", "../dati/Config/test/t_dip", "../dati/Config/test/t_diplemmi", "../dati/Config/test/t_distribuzionali", "../dati/Config/test/t_lso", "../dati/Config/test/t_modadj", "../dati/Config/test/t_morfologia", "../dati/Config/test/t_NER_e_filtri", "../dati/Config/test/t_PoS"]
-	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_evalita", "../dati/Config/v_lemmi"]
+	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_compl"]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_distr_2", "../dati/Config/v_baseline", "../dati/Config/v_distr_lemmi", "../dati/Config/v_lemmi_sp", "../dati/Config/v_compl", "../dati/Config/v_morfologia", "../dati/Config/v_distr_1", "../dati/Config/v_evalita_sp", "../dati/Config/v_ner"]
 
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"
@@ -66,7 +66,7 @@ class Main:
 		self.opzione ["depclass"] = Main._DUMP_OR_PARSE
 		self.opzione ["clusters"] = Main._DUMP_OR_PARSE
 		self.opzione ["pattern"] = Main._DUMP_OR_PARSE
-		self.opzione ["features"] = Main._DUMP_OR_PARSE
+		self.opzione ["features"] = Main._PARSE
 		self.opzione ["configurazione"] = Main._PARSE
 		self.opzione ["token_target"] = Main._PARSE
 	
@@ -107,7 +107,9 @@ class Main:
 		
 		
 		TR.Type_resolver.dizionario_possibili_liste = converter.lista_di_tutti_i_possibili
-
+		
+		#~ print converter.lista_di_tutti_i_possibili ["clusters"]
+		#~ m=raw_input()
 		
 		for file_configurazione in Main._PARSE_CONFIGURAZIONI_STD:
 			
@@ -122,8 +124,10 @@ class Main:
 				tipo = tupla[1]			
 				lista_features_atomiche.append( type_resolver.risolvi_tipi ( [nome], tipo ) )
 				
-				#~ print lista_features_atomiche
-			
+				
+			#~ print lista_features_atomiche
+			#~ print len(lista_features_atomiche[-1])
+			#~ m=raw_input()
 			printer.produci_matrice(configurazione.versione, lista_features_atomiche, lista_da_stampare)
 			
 			
@@ -140,7 +144,7 @@ if __name__ == "__main__":
 	m.comportamento ("depfiller", Main._DUMP)
 	m.comportamento ("depclass", Main._DUMP)
 	m.comportamento ("cluster", Main._DUMP)
-	m.comportamento ("pattern", Main._DUMP)
-	m.comportamento ("features", Main._DUMP)
+	m.comportamento ("pattern", Main._PARSE)
+	m.comportamento ("features", Main._PARSE)
 	m.comportamento ("configurazione", Main._PARSE)
 	m.perform ()

@@ -1,12 +1,17 @@
 #!/usr/bin/python
 # coding= utf-8
 
+import numpy as np
+
 class MatrixPrinter:
 	
 	def __init__(self, versione):
 		self.versione=versione
 		self.intestazione=[]
+		
+		#~ self.dati=None
 		self.dati=[]
+		self.dati_diplemmi=[]
 		self.tags=[]
 		self.identifiers=[]
 	
@@ -33,15 +38,27 @@ class MatrixPrinter:
 		self.intestazione=lista_features
 		
 		for istanza in lista_istanze:
+			#~ print "DEBUG: cambio token"
 			features=[]
+			features_dip_lemmi=[]
 			for lista in lista_features:
-				features.extend(self.recuperaFeature(lista, istanza))
-				#~ print features, type(features[0])
-				#~ m=raw_input()
+				if lista[0][0][0]=="Dip_lemmi":
+					features_dip_lemmi.extend(getattr(istanza, "Dip_lemmi").keys())
+					#~ print "DEBUG: non aggiungo ",lista[0][0][0]
+				else:
+					features.extend(self.recuperaFeature(lista, istanza))
+					#~ print "DEBUG: aggiungo ",lista[0][0][0]
+			
 			self.dati.append(features)
+			self.dati_diplemmi.append(features_dip_lemmi)
+			#~ print self.dati
+			#~ m=raw_input()
 			self.identifiers.append(istanza.id)
 			self.tags.append(self.recuperaLSO(istanza))
 			
+			
+	def comprimi_dati(self):
+		self.dati=np.array(self.dati)
 			
 	def recuperaLSO(self, istanza):
 		
@@ -51,8 +68,8 @@ class MatrixPrinter:
 		
 	def recuperaFeature(self, lista_features, istanza):
 		nome=lista_features[0][0]
-		
 		ret=[]
+		
 		
 		base=getattr(istanza, nome[0])
 		#~ print nome[0], base

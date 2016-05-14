@@ -5,7 +5,7 @@ import sys
 import math
 import Hasher as H
 
-_LIMITE_INFERIORE_FREQUENZE = 0
+_LIMITE_INFERIORE_FREQUENZE = 100
 """
 Alcuni filtri sui lemmi richiedono che la frequenza dello stesso maggiore di questo limite, altrimenti il lemma non è ritenuto significativo e ne viene usato uno fittizio al suo posto
 """
@@ -156,7 +156,7 @@ class Token_target:
 		#filtro su frequenza
 		elif lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE:
 		#~ if lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE:
-			lemma = "no_lemma"	
+			lemma = "MISSING_VALUE"	
 		#hash
 		self.lemma = Token_target.hasher_lemmas.hash (lemma)
 
@@ -389,11 +389,17 @@ class Token_target:
 	
 	def fModAdj_clusters (self, tok):
 		ret = {}
+		
+		#NB: l'hash è fatto solo per recuperarli dopo
 		for num in tok.ModAdj_cluster_pre:
-			ret[Token_target.hasher_cluster.hash (num)] = 1
+			ret[num] = 1
+			num = Token_target.hasher_cluster.add_hash(num)
 		for num in tok.ModAdj_cluster_post:
-			ret[Token_target.hasher_cluster.hash (num)] = 1
+			ret[num] = 1
+			num = Token_target.hasher_cluster.add_hash(num)
+			
 		self.ModAdj_clusters = ret;
+		
 		return ret
 	
 	def fModNum (self, tok):
@@ -433,6 +439,9 @@ class Token_target:
 		if len(tok.AntiDip)>0:
 			d=tok.AntiDip.keys()[p]
 			lemma = tok.AntiDip[d]['lemma']
+			if lemma!='sp' and (lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE):
+				lemma = "MISSING_VALUE"
+				
 			h = lemma
 		else:
 			h = "MISSING_VALUE"
@@ -589,8 +598,25 @@ class Token_target:
 		for el in tok.Dip:
 			for d in tok.Dip[el]:
 				lista=d['lemmi']
+				
+				#debug
+				#~ print lista
+				#~ m=raw_input()
+				
 				for l in lista:
-					h[Token_target.hasher_lemmi_dipendenze.hash(l)]=1
+					
+					#debug
+					#~ if l in Token_target.dizionario_filtro:
+						#~ print "frequenza in repubblica:", Token_target.dizionario_filtro[l]
+					#~ else:
+						#~ print "non presente in repubblica"
+
+					if l!="sp" and (l not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[l]<_LIMITE_INFERIORE_FREQUENZE):
+						lemma="MISSING_VALUE"
+					else:
+						lemma=l
+					
+					h[Token_target.hasher_lemmi_dipendenze.hash(lemma)]=1
 		self.Dip_lemmi=h
 		return h
 	

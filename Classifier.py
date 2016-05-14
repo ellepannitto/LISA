@@ -14,19 +14,14 @@ import Dumper
 import PredictionMatrix as PM
 
 
-class Classifier:
-	
-	
+class Classifier:	
 	def __init__(self, printer):
 		self.file_output="../dump/classificatori/statistics_"+printer.versione
 		self.file_output_errori="../dump/classificatori/errori_"+printer.versione
 		
 		self.intestazione=printer.intestazione
-		
-		#~ print self.intestazione
-		#~ m=raw_input()
-		
-		self.tags=self.normalizza(printer.tags)
+				
+		self.tags=np.array(printer.tags)
 		
 		self.dati=np.array(printer.dati)
 		self.dati_diplemmi=np.array(printer.dati_diplemmi)
@@ -52,7 +47,6 @@ class Classifier:
 		
 		self.lkf = cross_validation.LabelKFold(self.labels, n_folds=k)
 		
-		
 		self.enc = preprocessing.OneHotEncoder(categorical_features=self.indici_da_trasformare, dtype=np.int)		
 		self.enc.fit(self.dati)
 		
@@ -67,8 +61,7 @@ class Classifier:
 			
 			D_train, D_test = self.dati[train_index], self.dati[test_index]	
 			D_diplemmi_train, D_diplemmi_test = self.dati_diplemmi[train_index], self.dati_diplemmi[test_index]	
-			
-			
+				
 			D_train, D_test = self.enc.transform(D_train), self.enc.transform(D_test)
 			D_train_sparse, D_test_sparse = scipy.sparse.csr_matrix (D_train), scipy.sparse.csr_matrix (D_test)
 			
@@ -101,10 +94,7 @@ class Classifier:
 	
 	def classifica (self, k):
 		
-		#~ print self.labels
-		
 		self.lkf = cross_validation.LabelKFold(self.labels, n_folds=k)
-		
 		
 		self.enc = preprocessing.OneHotEncoder(categorical_features=self.indici_da_trasformare, dtype=np.int)
 		self.enc.fit(self.dati)
@@ -220,5 +210,5 @@ class Classifier:
 					self.indici_da_trasformare.append(i)
 				i+=1
 		
-		#~ self.indici_da_trasformare=self.indici_da_trasformare[:-1]
+		self.indici_da_trasformare=self.indici_da_trasformare[:-1]
 		

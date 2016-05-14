@@ -13,9 +13,11 @@ class Main:
 		
 	#~ lista_file_printer=[ "../arff/matrici/v_16", "../arff/matrici/v_17", "../arff/matrici/v_18"]
 	#~ lista_file_printer=["../arff/matrici/v_00","../arff/matrici/v_01","../arff/matrici/v_01_bis","../arff/matrici/v_02","../arff/matrici/v_03","../arff/matrici/v_04","../arff/matrici/v_05","../arff/matrici/v_06","../arff/matrici/v_07","../arff/matrici/v_08","../arff/matrici/v_09","../arff/matrici/v_09_bis","../arff/matrici/v_11", "../arff/matrici/v_15"]
-	lista_file_printer=["../arff/matrici/v_evalita", "../arff/matrici/v_lemmi", "../arff/matrici/v_distr_2", "../arff/matrici/v_baseline", "../arff/matrici/v_lemmi_sp", "../arff/matrici/v_morfologia", "../arff/matrici/v_distr_1", "../arff/matrici/v_evalita_sp", "../arff/matrici/v_ner"]
+	#~ lista_file_printer=["../arff/matrici/v_evalita", "../arff/matrici/v_lemmi", "../arff/matrici/v_distr_2", "../arff/matrici/v_baseline", "../arff/matrici/v_lemmi_sp", "../arff/matrici/v_morfologia", "../arff/matrici/v_distr_1", "../arff/matrici/v_evalita_sp", "../arff/matrici/v_ner"]
+	lista_file_printer=["../arff/matrici/v_compl"]
 	#~ lista_file_printer=["../arff/matrici/v_lucio", "../arff/matrici/v_10", "../arff/matrici/v_12"]
 	#~ lista_file_printer=["../arff/matrici/v_10"]
+	
 	
 	_NFOLD=10
 	
@@ -34,8 +36,8 @@ class Main:
 			
 			classificatore.estraiIndiciClass()
 			
-			#classificatore.classifica_diplemmi(Main._NFOLD)
-			classificatore.classifica(Main._NFOLD)
+			classificatore.classifica_diplemmi(Main._NFOLD)
+			#classificatore.classifica(Main._NFOLD)
 			
 			Dumper.binary_dump(classificatore, "../dump/classificatori/"+printer.versione)
 			

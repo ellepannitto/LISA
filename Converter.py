@@ -9,7 +9,9 @@ class Converter:
 		pass
 
 	def converti_corpus_to_token_target (self, corpus, frequenze_standard):
-		dizionario_filtro = corpus.dizionario_frequenze
+		
+		dizionario_filtro = frequenze_standard.dizionario_cumulato
+		
 		dizionario_frequenze = frequenze_standard.dizionario_frequenze
 		frequenze_cumulate = frequenze_standard.dizionario_cumulato
 		massimafreq = frequenze_standard.massima_frequenza
