@@ -6,6 +6,7 @@ import datetime
 
 import Filtro as F
 import FiltroCluster as FC
+import RFE
 
 from sklearn import svm
 from sklearn import preprocessing
@@ -204,14 +205,18 @@ def estrai_label ( intestazione, lab):
 	
 	for el in intestazione:
 		for tup in el:
-			ret.append(tup[0][1])
-			
+			#~ print tup
+			nome = tup[0]
+			if nome[0]==lab:
+				#~ print nome
+				ret.append(nome[1])
+		#~ m=raw_input()	
 	return ret
 			
 
 class FeatureSelector:
 	
-	def __init__(self):
+	def __init__(self, printer):
 		
 		now = datetime.datetime.now ()
 		data = now.strftime ("%Y_%m_%d")
@@ -230,8 +235,7 @@ class FeatureSelector:
 		self.filtro_diplemmi = F.Filtro ( ["S", "V"], hasher_dipendenze, frequenze_repubblica )
 		
 		self.genera_gruppi (printer)
-			
-		#~ self.tutti_i_possibili_diplemmi = [[el] for el in printer.intestazione[-1][0][1]]
+		print self.gruppi.keys()
 		
 		#~ self.labels=[]
 		
@@ -241,7 +245,7 @@ class FeatureSelector:
 		
 		#~ prima_matrice = self.encode (printer.dati, printer.intestazione)
 		
-		#~ seconda_matrice = self.expand (printer.dati_diplemmi)				
+						
 		
 		#~ matrice = scipy.sparse.hstack ([prima_matrice, seconda_matrice])
 		
@@ -269,7 +273,7 @@ class FeatureSelector:
 		indice_det_indef = index_generalizzato (lista_indici, ["Det_indef"])
 		indice_modadj_pre = index_generalizzato (lista_indici, ["ModAdj_pre_b"])
 		indice_modadj_post = index_generalizzato (lista_indici, ["ModAdj_post_b"])
-		indice_modadj_cluster = index_generalizzato_prefisso (lista_indici, ["ModAdj_cluster"])
+		indice_modadj_cluster = index_generalizzato_prefisso (lista_indici, ["ModAdj_clusters"])
 		indice_antidip_tipo = index_generalizzato (lista_indici, ["AntiDip_tipo"])
 		
 		indice_antidip_lemmi = index_generalizzato (lista_indici, ["AntiDip_lemmi"])
@@ -315,14 +319,15 @@ class FeatureSelector:
 		self.gruppi["modadj_post"] = estrai_colonna ( indice_modadj_post, printer.dati )
 		
 		colonna_modadj_cluster = estrai_colonna ( indice_modadj_cluster, printer.dati )
-		lista_possibili_cluster = estrai_label (printer.intestazione, "ModAdj_cluster")
+		colonna_modadj_cluster_sparsa = scipy.sparse.csc_matrix(colonna_modadj_cluster)
+		lista_possibili_cluster = estrai_label (printer.intestazione, "ModAdj_clusters")
 		
-		print lista_possibili_cluster
-		m=raw_input()
+		#~ print lista_possibili_cluster
+		#~ m=raw_input()
 		
-		#~ lista_gruppi_modadj_cluster = applica_filtro ( colonna_modadj_cluster, ,self.filtro_modadj_cluster )
-		#~ for i in range(len(lista_gruppi_modadj_cluster));
-			#~ self.gruppi["modadj_cluster_"+str(i)] = lista_gruppi_modadj_cluster[i]
+		lista_gruppi_modadj_cluster = applica_filtro ( colonna_modadj_cluster_sparsa, lista_possibili_cluster ,self.filtro_cluster )
+		for i in range(len(lista_gruppi_modadj_cluster)):
+			self.gruppi["modadj_cluster_"+str(i)] = lista_gruppi_modadj_cluster[i]
 		
 		self.gruppi["antidip_tipo"] = estrai_colonna_one_hot ( indice_antidip_tipo, printer.dati )
 		
@@ -339,12 +344,23 @@ class FeatureSelector:
 		self.gruppi["dip_pos"] = estrai_colonna ( indice_dip_pos, printer.dati )
 		self.gruppi["dip_preposizione"] = estrai_colonna ( indice_dip_preposizione, printer.dati )
 		
-		#~ self.gruppi["diplemmi"] = ###boh, ci vuole anche il filtro
 		
-	def expand (self, dati_diplemmi):
+		lista_possibili_diplemmi = printer.intestazione[-1][0][1]
 		
-		self.enc_diplemmi=preprocessing.OneHotEncoder()
-		self.enc_diplemmi.fit(self.tutti_i_possibili_diplemmi)
+		colonna_diplemmi = self.expand (printer.dati_diplemmi, lista_possibili_diplemmi)
+		lista_gruppi_diplemmi = applica_filtro ( colonna_diplemmi, sorted(set(lista_possibili_diplemmi)), self.filtro_diplemmi )
+		for i in range(len(lista_gruppi_diplemmi)):
+			self.gruppi["diplemmi_"+str(i)] = lista_gruppi_diplemmi[i]
+
+		
+	def expand (self, dati_diplemmi, lista_possibili_diplemmi):
+		
+		self.enc_diplemmi=preprocessing.OneHotEncoder(handle_unknown="ignore")
+		
+		massimo = max(lista_possibili_diplemmi)+1
+		mockup = [ [el] for el in lista_possibili_diplemmi ]
+		
+		self.enc_diplemmi.fit( mockup )
 		
 		lista_di_liste=[]
 		i=0
@@ -360,7 +376,7 @@ class FeatureSelector:
 					tutti_vuoti=False
 					lista_i.append([el[i]])
 				else:
-					lista_i.append([0])
+					lista_i.append([massimo])
 			if not tutti_vuoti:
 				lista_di_liste.append(lista_i)
 				#~ print "DEBUG: lista numero",i, lista_i
@@ -368,7 +384,7 @@ class FeatureSelector:
 	
 		lista_di_matrici=[]
 		
-		width = len(self.tutti_i_possibili_diplemmi)
+		width = len(lista_possibili_diplemmi)
 		height = len(dati_diplemmi)
 		
 		#print "Debug: dimensioni matrice ",height, "x", width
@@ -383,13 +399,14 @@ class FeatureSelector:
 		#~ print "Debug: matrice somma "
 		#~ print matrice_sparsa_diplemmi.toarray()
 
-		matrice_senza_prima_colonna = scipy.sparse.csr_matrix(matrice_sparsa_diplemmi)[:,range(1,width)]
+
 		
 		#~ print "Debug: matrice somma senza prima colonna"
 		#~ print matrice_senza_prima_colonna.toarray()
-
-				
-		return matrice_senza_prima_colonna
+		
+		
+		
+		return matrice_sparsa_diplemmi
 		
 	def encode (self, features, intestazione):
 		
@@ -436,3 +453,6 @@ class FeatureSelector:
 if __name__=="__main__":
 	
 	f=FeatureSelector()
+	
+	RFE.perform_dict(f.gruppi)
+	

@@ -1,11 +1,33 @@
 
 import copy
 import random
+import scipy.sparse
+
 
 def perform_classification ( gruppi_feature ):
+	
+	matrice = scipy.sparse.hstack(gruppi_feature)
+	
+	
+	
 	return random.randint (0,100)
 
-def perform_rfe (gruppi_feature, numero_rimanenti=0):
+def perform_dict (dict_gruppi):
+	
+	indici=[]
+	lista_gruppi=[]
+	
+	
+	for el in dict_gruppi:
+		indici.append(el)
+		lista.append(dict_gruppi[el])		
+	
+	
+	res = perform_rfe(lista_gruppi)
+
+	
+
+def perform_rfe (gruppi_feature, numero_rimanenti=1):
 	
 	indici_feature_utilizzate = range (len(gruppi_feature))
 	
