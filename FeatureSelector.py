@@ -6,7 +6,6 @@ import datetime
 
 import Filtro as F
 import FiltroCluster as FC
-import RFE
 
 from sklearn import svm
 from sklearn import preprocessing
@@ -17,7 +16,6 @@ import scipy.sparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-versione_completa = "../arff/matrici/v_compl" 
 _NFOLD=10
 	
 
@@ -221,7 +219,7 @@ class FeatureSelector:
 		now = datetime.datetime.now ()
 		data = now.strftime ("%Y_%m_%d")
 		
-		printer=Dumper.binary_load(versione_completa)
+		
 		
 		hasher_lemmi = Dumper.binary_load("../dump/hasher/lemmi.rawobject") 
 		hasher_teste = Dumper.binary_load("../dump/hasher/antidipendenze.rawobject")
@@ -235,7 +233,7 @@ class FeatureSelector:
 		self.filtro_diplemmi = F.Filtro ( ["S", "V"], hasher_dipendenze, frequenze_repubblica )
 		
 		self.genera_gruppi (printer)
-		print self.gruppi.keys()
+		#~ print self.gruppi.keys()
 		
 		#~ self.labels=[]
 		
@@ -449,10 +447,4 @@ class FeatureSelector:
 		#~ pass
 		
 		
-		
-if __name__=="__main__":
-	
-	f=FeatureSelector()
-	
-	RFE.perform_dict(f.gruppi)
 	
