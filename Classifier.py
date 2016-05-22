@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import Dumper
 import PredictionMatrix as PM
 
+import time
+import random
 
 class Classifier:	
 	def __init__(self, matrice, tags, ids):
@@ -30,7 +32,13 @@ class Classifier:
 			l=el.split(".")
 			self.labels.append(l[0][1:])
 
-		
+	def perform_dummy ( self ):
+		'''
+		 test performing without losing time
+		'''
+		s = random.randint (0,100)
+		time.sleep (s/10)
+		return [s,s,s]
 	
 	def perform (self):
 		
