@@ -95,7 +95,12 @@ class Corpus:
 						(default:0)
 			
 		"""
-		patterns=pattern.records.items()
+		##PER IL TRAIN
+		#~ patterns=pattern.records.items()
+		
+		##PER IL TEST
+		patterns=pattern.records_test.items()
+		
 		cluster = mappa_cluster.mappa
 		if test:
 			patterns=pattern.records_test.items()

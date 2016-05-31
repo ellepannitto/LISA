@@ -109,8 +109,8 @@ class RFE:
 				i = int (seconda_riga)
 				posizione_ultimo_indice_rimosso = indici_feature_utilizzate.index(i)
 				indice_da_rimuovere = indici_feature_utilizzate [ posizione_ultimo_indice_rimosso + 1 ] if posizione_ultimo_indice_rimosso < len(indici_feature_utilizzate)-1 else -1
-				print "DEBUG: riparto con feature", indici_feature_utilizzate, "rimuovendo", indice_da_rimuovere
-				print "che si chiama (a meno che non sia -1)", self.nomi_feature[indice_da_rimuovere]
+				#~ print "DEBUG: riparto con feature", indici_feature_utilizzate, "rimuovendo", indice_da_rimuovere
+				#~ print "che si chiama (a meno che non sia -1)", self.nomi_feature[indice_da_rimuovere]
 				
 				#ricarica le statistiche delle classificazioni avvenute prima di interrompere RFE
 				statistics_row = Dumper.binary_load ( self.file_start_from + "_statistics_row" )
@@ -152,8 +152,8 @@ class RFE:
 				
 				C = self.get_classifier_for_groups ( gruppi_per_classificazione )
 				
-				print "starting thread for",self.nomi_feature[indice]
-				async_result = pool.apply_async ( C.perform_dummy )
+				#~ print "starting thread for",self.nomi_feature[indice]
+				async_result = pool.apply_async ( C.perform )
 				future_results.append (async_result)
 				
 			
@@ -163,7 +163,7 @@ class RFE:
 				
 				indice = indici_feature_utilizzate [i]
 				
-				print "getting result for",self.nomi_feature[indice]
+				#~ print "getting result for",self.nomi_feature[indice]
 				res = future_results[j].get()
 				j+=1
 				print "rimuovo", self.nomi_feature[indice], "risultato", res				

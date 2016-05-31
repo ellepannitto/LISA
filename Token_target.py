@@ -4,6 +4,7 @@
 import sys
 import math
 import Hasher as H
+import Dumper
 
 _LIMITE_INFERIORE_FREQUENZE = 100
 """
@@ -26,6 +27,8 @@ class Token_target:
 	 dove XXX è il nome della feature. Si noti che non tutte le feature sono supportate
 	"""
 	dizionario_filtro = None;
+	
+	
 	hasher_forms = H.Hasher ();
 	hasher_lemmas = H.Hasher ();
 	hasher_dipendenze = H.Hasher ();
@@ -51,6 +54,7 @@ class Token_target:
 			print "[Token_target] new dizionario_filtro:", diz
 			print "[Token_target] the new dizionario_filtro will overwrite the old one"
 			Token_target.dizionario_filtro = diz
+		
 		
 	def __init__ (self, tok, frase, p):
 		self.from_token (tok, p)

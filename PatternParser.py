@@ -11,6 +11,7 @@ def creaChiave(stringa):
 		token=int(dividi_due[2].replace("token", ''))
 		#~ print dividi_due[0]
 		#~ m=raw_input()
+		#~ if dividi_due[0]=='training':
 		if dividi_due[0]=='training':
 			b=True
 		else:

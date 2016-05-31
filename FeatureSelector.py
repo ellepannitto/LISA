@@ -221,13 +221,15 @@ class FeatureSelector:
 		
 		
 		
-		hasher_lemmi = Dumper.binary_load("../dump/hasher/lemmi.rawobject") 
+		#~ hasher_lemmi = Dumper.binary_load("../dump/hasher/lemmi.rawobject") 
+		
 		hasher_teste = Dumper.binary_load("../dump/hasher/antidipendenze.rawobject")
 		hasher_dipendenze = Dumper.binary_load("../dump/hasher/dipendenze.rawobject")
 		
 		frequenze_repubblica = Dumper.binary_load("../dump/sorted.repubblica.sensitive.lemmasAndPos")
 		
-		self.filtro_lemmi = F.Filtro ( ["S"], hasher_lemmi, frequenze_repubblica )
+		#~ self.filtro_lemmi = F.Filtro ( ["S"], hasher_lemmi, frequenze_repubblica )
+		
 		self.filtro_antidip_lemmi = F.Filtro ( ["S", "V"], hasher_teste, frequenze_repubblica ) 
 		self.filtro_cluster = FC.FiltroCluster (frequenze_repubblica)
 		self.filtro_diplemmi = F.Filtro ( ["S", "V"], hasher_dipendenze, frequenze_repubblica )
@@ -261,8 +263,8 @@ class FeatureSelector:
 		indice_morfologia_genere = index_generalizzato (lista_indici, ["morfologia_genere"])
 		indice_morfologia_numero = index_generalizzato (lista_indici, ["morfologia_numero"])
 		
-		indice_lemmi = index_generalizzato (lista_indici, ["lemma"])
-		lista_possibili_lemmi = lista_possibili_valori [indice_lemmi[0]]
+		#~ indice_lemmi = index_generalizzato (lista_indici, ["lemma"])
+		#~ lista_possibili_lemmi = lista_possibili_valori [indice_lemmi[0]]
 		
 		indice_ner_one_hot = index_generalizzato (lista_indici, ["CPoSPrev","CPoSNext","PoSPrev","PoS","PoSNext"])
 		indice_ner_normali = index_generalizzato (lista_indici, ["Hyphen","Capitalized","FirstWord","WordShape","WithinQuotes","SeqCap","CapNext","CapPrev","FrequenzaLemmaPoS_log","FrequenzaRelativaLemmaPoS"])
@@ -289,12 +291,12 @@ class FeatureSelector:
 		self.gruppi["morfologia_numero"] = estrai_colonna_one_hot ( indice_morfologia_numero, printer.dati )
 		
 		
-		colonna_lemmi = estrai_colonna_one_hot ( indice_lemmi, printer.dati )
+		#~ colonna_lemmi = estrai_colonna_one_hot ( indice_lemmi, printer.dati )
 		
 		
-		lista_gruppi_lemmi = applica_filtro ( colonna_lemmi, sorted(set(lista_possibili_lemmi)), self.filtro_lemmi )
-		for i in range(len(lista_gruppi_lemmi)):
-			self.gruppi["lemmi_"+str(i)] = lista_gruppi_lemmi[i]
+		#~ lista_gruppi_lemmi = applica_filtro ( colonna_lemmi, sorted(set(lista_possibili_lemmi)), self.filtro_lemmi )
+		#~ for i in range(len(lista_gruppi_lemmi)):
+			#~ self.gruppi["lemmi_"+str(i)] = lista_gruppi_lemmi[i]
 		
 		matrice_ner_one_hot = estrai_colonna_one_hot ( indice_ner_one_hot, printer.dati )
 		matrice_ner_normali = estrai_colonna ( indice_ner_normali, printer.dati )
