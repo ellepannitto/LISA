@@ -18,14 +18,14 @@ def main():
 	printer=Dumper.binary_load(versione_completa)
 	print "[MAIN] caricato Printer"
 	
-	#~ f=FS.FeatureSelector(printer)
-	#~ print "[MAIN] creato FS"
+	f=FS.FeatureSelector(printer)
+	print "[MAIN] creato FS"
 	
-	#~ Dumper.binary_dump (f, "../dump/FeatureSelector")
-	f = Dumper.binary_load ("../dump/FeatureSelector")
+	Dumper.binary_dump (f, "../dump/FeatureSelector")
+	#~ f = Dumper.binary_load ("../dump/FeatureSelector")
 	
-	r = RFE.RFE(printer.tags, printer.identifiers, "start_from")
-	#~ r = RFE.RFE(printer.tags, printer.identifiers)
+	#~ r = RFE.RFE(printer.tags, printer.identifiers, "start_from")
+	r = RFE.RFE(printer.tags, printer.identifiers)
 	print "[MAIN] creato RFE"
 	
 	r.perform_dict(f.gruppi)

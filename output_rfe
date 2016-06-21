@@ -1,0 +1,9 @@
+inizio!
+[MAIN] caricato Printer
+[MAIN] creato FS
+[MAIN] creato RFE
+eseguo prima classificazione
+prima classificazione - risultato: [ 0.7640782   0.76516769  0.77206389  0.7728963   0.76971283]
+nuovo ciclo - 
+	feat utilizzate: ['diplemmi', 'morfologia_numero', 'antidip_pos', 'antidip_classe_associazione', 'modadj_cluster', 'dip_preposizione', 'antidip_forza_associazione', 'modadj_post', 'antidip_preposizione', 'dip', 'dip_pos', 'antidip_tipo', 'morfologia_genere', 'det_indef', 'det_def', 'lemmi', 'modnum', 'modadj_pre', 'ner', 'antidip_lemmi']
+	feat non utilizzate: []

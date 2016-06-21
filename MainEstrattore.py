@@ -23,8 +23,8 @@ import Dumper
 
 class Main:
 		
-	_PARSE_CORPUS_STD = "../dati/corpus/corpus_test"
-	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
+	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_test"
+	_PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
 	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_testing"
 	_PARSE_REPUBBLICA_STD = "../dati/repubblicaFreqs/sorted.repubblica.sensitive.lemmasAndPos"
 	_PARSE_MAPPA_STD = "../dati/Mapping/fillers2LSO-merged.map"
@@ -38,7 +38,7 @@ class Main:
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_00","../dati/Config/v_01","../dati/Config/v_02","../dati/Config/v_03","../dati/Config/v_04","../dati/Config/v_05","../dati/Config/v_06","../dati/Config/v_07","../dati/Config/v_08","../dati/Config/v_09","../dati/Config/v_10","../dati/Config/v_11", "../dati/Config/v_13", "../dati/Config/v_14" ]
 	#~ _PARSE_CONFIGURAZIONI_STD = [ "../dati/Config/test/t_antidip", "../dati/Config/test/t_associazioni_testa", "../dati/Config/test/t_codip", "../dati/Config/test/t_dip", "../dati/Config/test/t_diplemmi", "../dati/Config/test/t_distribuzionali", "../dati/Config/test/t_lso", "../dati/Config/test/t_modadj", "../dati/Config/test/t_morfologia", "../dati/Config/test/t_NER_e_filtri", "../dati/Config/test/t_PoS"]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_rfe", "../dati/Config/v_compl"]
-	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_compl"]
+	_PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_compl", "../dati/Config/v_compl_nolemmi"]
 	#~ _PARSE_CONFIGURAZIONI_STD = ["../dati/Config/v_distr_2", "../dati/Config/v_baseline", "../dati/Config/v_distr_lemmi", "../dati/Config/v_lemmi_sp", "../dati/Config/v_compl", "../dati/Config/v_morfologia", "../dati/Config/v_distr_1", "../dati/Config/v_evalita_sp", "../dati/Config/v_ner"]
 
 	_DUMP_CORPUS_STD = "../dump/corpus_attuale"

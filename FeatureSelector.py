@@ -197,7 +197,6 @@ def applica_filtro ( matrice, label, filtro ):
 		
 	return ret
 	
-	
 def estrai_label ( intestazione, lab):
 	ret = []
 	
@@ -263,8 +262,8 @@ class FeatureSelector:
 		indice_morfologia_genere = index_generalizzato (lista_indici, ["morfologia_genere"])
 		indice_morfologia_numero = index_generalizzato (lista_indici, ["morfologia_numero"])
 		
-		#~ indice_lemmi = index_generalizzato (lista_indici, ["lemma"])
-		#~ lista_possibili_lemmi = lista_possibili_valori [indice_lemmi[0]]
+		indice_lemmi = index_generalizzato (lista_indici, ["lemma"])
+		lista_possibili_lemmi = lista_possibili_valori [indice_lemmi[0]]
 		
 		indice_ner_one_hot = index_generalizzato (lista_indici, ["CPoSPrev","CPoSNext","PoSPrev","PoS","PoSNext"])
 		indice_ner_normali = index_generalizzato (lista_indici, ["Hyphen","Capitalized","FirstWord","WordShape","WithinQuotes","SeqCap","CapNext","CapPrev","FrequenzaLemmaPoS_log","FrequenzaRelativaLemmaPoS"])
@@ -290,6 +289,7 @@ class FeatureSelector:
 		self.gruppi["morfologia_genere"] = estrai_colonna_one_hot ( indice_morfologia_genere, printer.dati )
 		self.gruppi["morfologia_numero"] = estrai_colonna_one_hot ( indice_morfologia_numero, printer.dati )
 		
+		self.gruppi["lemmi"]=estrai_colonna_one_hot ( indice_lemmi, printer.dati )
 		
 		#~ colonna_lemmi = estrai_colonna_one_hot ( indice_lemmi, printer.dati )
 		
@@ -320,21 +320,28 @@ class FeatureSelector:
 		
 		colonna_modadj_cluster = estrai_colonna ( indice_modadj_cluster, printer.dati )
 		colonna_modadj_cluster_sparsa = scipy.sparse.csc_matrix(colonna_modadj_cluster)
-		lista_possibili_cluster = estrai_label (printer.intestazione, "ModAdj_clusters")
+		
+		self.gruppi["modadj_cluster"]= colonna_modadj_cluster_sparsa
+		
+		#~ lista_possibili_cluster = estrai_label (printer.intestazione, "ModAdj_clusters")
 		
 		#~ print lista_possibili_cluster
 		#~ m=raw_input()
 		
-		lista_gruppi_modadj_cluster = applica_filtro ( colonna_modadj_cluster_sparsa, lista_possibili_cluster ,self.filtro_cluster )
-		for i in range(len(lista_gruppi_modadj_cluster)):
-			self.gruppi["modadj_cluster_"+str(i)] = lista_gruppi_modadj_cluster[i]
+		#~ lista_gruppi_modadj_cluster = applica_filtro ( colonna_modadj_cluster_sparsa, lista_possibili_cluster, self.filtro_cluster )
+		
+		#~ for i in range(len(lista_gruppi_modadj_cluster)):
+			#~ self.gruppi["modadj_cluster_"+str(i)] = lista_gruppi_modadj_cluster[i]
 		
 		self.gruppi["antidip_tipo"] = estrai_colonna_one_hot ( indice_antidip_tipo, printer.dati )
 		
 		colonna_antidip_lemmi = estrai_colonna_one_hot ( indice_antidip_lemmi, printer.dati )
-		lista_gruppi_antidip_lemmi = applica_filtro ( colonna_antidip_lemmi, sorted(set(lista_possibili_antidip_lemmi)), self.filtro_antidip_lemmi )
-		for i in range(len(lista_gruppi_antidip_lemmi)):
-			self.gruppi["antidip_lemmi_"+str(i)] = lista_gruppi_antidip_lemmi[i]
+		self.gruppi["antidip_lemmi"]=colonna_antidip_lemmi
+		
+		
+		#~ lista_gruppi_antidip_lemmi = applica_filtro ( colonna_antidip_lemmi, sorted(set(lista_possibili_antidip_lemmi)), self.filtro_antidip_lemmi )
+		#~ for i in range(len(lista_gruppi_antidip_lemmi)):
+			#~ self.gruppi["antidip_lemmi_"+str(i)] = lista_gruppi_antidip_lemmi[i]
 		
 		self.gruppi["antidip_pos"] = estrai_colonna_one_hot ( indice_antidip_pos, printer.dati )
 		self.gruppi["antidip_preposizione"] = estrai_colonna_one_hot ( indice_antidip_preposizione, printer.dati )
@@ -348,9 +355,11 @@ class FeatureSelector:
 		lista_possibili_diplemmi = printer.intestazione[-1][0][1]
 		
 		colonna_diplemmi = self.expand (printer.dati_diplemmi, lista_possibili_diplemmi)
-		lista_gruppi_diplemmi = applica_filtro ( colonna_diplemmi, sorted(set(lista_possibili_diplemmi)), self.filtro_diplemmi )
-		for i in range(len(lista_gruppi_diplemmi)):
-			self.gruppi["diplemmi_"+str(i)] = lista_gruppi_diplemmi[i]
+		self.gruppi["diplemmi"]=colonna_diplemmi
+
+		#~ lista_gruppi_diplemmi = applica_filtro ( colonna_diplemmi, sorted(set(lista_possibili_diplemmi)), self.filtro_diplemmi )
+		#~ for i in range(len(lista_gruppi_diplemmi)):
+			#~ self.gruppi["diplemmi_"+str(i)] = lista_gruppi_diplemmi[i]
 
 		
 	def expand (self, dati_diplemmi, lista_possibili_diplemmi):

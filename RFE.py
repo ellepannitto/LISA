@@ -90,10 +90,10 @@ class RFE:
 			
 			#se bisogna riniziare da capo, fa la prima classificazione con tutte le feature
 			
-			#~ print "eseguo prima classificazione"
-			#~ gruppi_per_classificazione = [ gruppi_feature[i] for i in indici_feature_utilizzate ]
-			#~ res = self.perform_classification ( gruppi_per_classificazione )
-			res = [0.74468663,0.74623218,0.75037339,0.74818336,0.74662139]
+			print "eseguo prima classificazione"
+			gruppi_per_classificazione = [ gruppi_feature[i] for i in indici_feature_utilizzate ]
+			res = self.perform_classification ( gruppi_per_classificazione )
+			#~ res = [0.74468663,0.74623218,0.75037339,0.74818336,0.74662139]
 			print "prima classificazione - risultato:", res
 			statistica = ST.Statistic (self.get_nomi_feature (indici_feature_utilizzate), res)
 		
