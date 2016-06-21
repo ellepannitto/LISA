@@ -30,6 +30,7 @@ class Hasher:
 			ret = self.dizionario_hash[s]
 		else:
 			self.dizionario_hash[s] = self.next_hash
+			#~ print "[DEBUG] test: trovato valore che prima non c'era:",s, "hash:",self.next_hash
 			self.next_hash += 1
 		return self.dizionario_hash[s]
 

@@ -398,9 +398,12 @@ class Token_target:
 		for num in tok.ModAdj_cluster_pre:
 			ret[num] = 1
 			num = Token_target.hasher_cluster.add_hash(num)
+			#~ ret[num] = 1
+			
 		for num in tok.ModAdj_cluster_post:
 			ret[num] = 1
 			num = Token_target.hasher_cluster.add_hash(num)
+			#~ ret[num] = 1
 			
 		self.ModAdj_clusters = ret;
 		

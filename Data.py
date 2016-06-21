@@ -23,6 +23,10 @@ class Data:
 				
 		self.tags=np.array(printer.tags)
 		
+		print "len(printer.dati)",len(printer.dati)
+		print "len(printer.dati[0])",len(printer.dati[0])
+		#~ m=raw_input()
+		
 		self.dati=np.array(printer.dati)
 		self.dati_diplemmi=np.array(printer.dati_diplemmi)
 	

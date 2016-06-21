@@ -16,6 +16,8 @@ import TypeResolver as TR
 import ArffPrinter as AP
 import MatrixPrinter_backup_diplemmi as MP
 
+import StatisticheAnnotazione as SA
+
 import Dumper
 
 #####NB: migliorare gestione passaggio train-test
@@ -23,8 +25,8 @@ import Dumper
 
 class Main:
 		
-	_PARSE_CORPUS_STD = "../dati/corpus/corpus_test"
-	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
+	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_test"
+	_PARSE_CORPUS_STD = "../dati/corpus/corpus_attuale"
 	#~ _PARSE_CORPUS_STD = "../dati/corpus/corpus_testing"
 	_PARSE_REPUBBLICA_STD = "../dati/repubblicaFreqs/sorted.repubblica.sensitive.lemmasAndPos"
 	_PARSE_MAPPA_STD = "../dati/Mapping/fillers2LSO-merged.map"
@@ -94,60 +96,17 @@ class Main:
 	
 	def perform (self):
 		
-		frequenze_repubblica = self.parse_or_dump ("repubblica",Main._DUMP_REPUBBLICA_STD, lambda: R.Repubblica( Main._PARSE_REPUBBLICA_STD ) )
-		mappa_sensi = self.parse_or_dump ("mappa",Main._DUMP_MAPPA_STD, lambda: MS.MappaSensi( Main._PARSE_MAPPA_STD ) , ["pattern", "corpus"] )
-		associazioni_filler = self.parse_or_dump("depfiller", Main._DUMP_DEPFILLER_STD, lambda: AF.AssociazioniFiller( Main._PARSE_DEPFILLER_STD ), ["pattern", "corpus"] )
-		associazioni_class = self.parse_or_dump("depclass", Main._DUMP_DEPCLASS_STD, lambda: AC.AssociazioniClass( Main._PARSE_DEPCLASS_STD ), ["pattern", "corpus"] )
-		mappa_cluster = self.parse_or_dump("clusters", Main._DUMP_CLUSTERS_STD, lambda: JC.AdjectiveCluster( Main._PARSE_CLUSTERS_STD ) )
-		pattern = self.parse_or_dump("pattern", Main._DUMP_PATTERN_STD, lambda: PP.Pattern ( Main._PARSE_PATTERN_STD, mappa_cluster, associazioni_class, associazioni_filler ), ["corpus"] )
-		corpus = self.parse_or_dump("corpus", Main._DUMP_CORPUS_STD, lambda: C.Corpus( Main._PARSE_CORPUS_STD, pattern, mappa_cluster ) )
+		frequenze_repubblica =  R.Repubblica( Main._PARSE_REPUBBLICA_STD ) 
+		mappa_sensi = MS.MappaSensi( Main._PARSE_MAPPA_STD )
+		associazioni_filler = AF.AssociazioniFiller( Main._PARSE_DEPFILLER_STD )
+		associazioni_class = AC.AssociazioniClass( Main._PARSE_DEPCLASS_STD )
+		mappa_cluster = JC.AdjectiveCluster( Main._PARSE_CLUSTERS_STD )
+		pattern = PP.Pattern ( Main._PARSE_PATTERN_STD, mappa_cluster, associazioni_class, associazioni_filler )
+		corpus = C.Corpus( Main._PARSE_CORPUS_STD, pattern, mappa_cluster )
 		
-		features = self.parse_or_dump("features", Main._DUMP_FEATURES_STD, lambda: CR.ConfigReader( Main._PARSE_FEATURES_STD ) )
+		s= SA.StatisticheAnnotazione( corpus ) 
 		
-		converter = CVT.Converter()
-		type_resolver = TR.Type_resolver ( )
 		
-		#TRAIN
-		#~ lista_da_stampare = self.parse_or_dump("token_target", Main._DUMP_TOKEN_TARGET_STD, lambda: converter.converti_corpus_to_token_target( corpus, frequenze_repubblica ) )
-		
-		#TEST
-		lista_da_stampare = self.parse_or_dump("token_target", Main._DUMP_TOKEN_TARGET_STD, lambda: converter.converti_corpus_to_token_target( corpus, frequenze_repubblica, "test" ) )
-		
-		#NO
-		#~ lista_da_stampare = self.parse_or_dump("token_target", Main._DUMP_TOKEN_TARGET_STD, lambda: None )
-		
-		TR.Type_resolver.dizionario_possibili_liste = converter.lista_di_tutti_i_possibili
-		
-		#~ print converter.lista_di_tutti_i_possibili ["clusters"]
-		#~ m=raw_input()
-		
-		for file_configurazione in Main._PARSE_CONFIGURAZIONI_STD:
-			
-			configurazione = self.parse_or_dump("configurazione", Main._DUMP_CONFIGURAZIONE_STD, lambda: CR.ConfigReader( file_configurazione ) )
-			
-			configurazione=CR.ConfigReader(file_configurazione)
-			printer=MP.MatrixPrinter(configurazione.versione)
-			
-			lista_features_atomiche = []
-			for tupla in configurazione.features_scelte:
-				nome = tupla[0]
-				tipo = tupla[1]
-				features_atomiche_generate = type_resolver.risolvi_tipi ( [nome], tipo )
-				
-				lista_features_atomiche.append( features_atomiche_generate )
-				
-				#~ print "[DEBUG]feature:",nome,"produce",len(features_atomiche_generate),"features atomiche"
-				
-			#~ print lista_features_atomiche
-			#~ print len(lista_features_atomiche[-1])
-			#~ m=raw_input()
-			printer.produci_matrice(configurazione.versione, lista_features_atomiche, lista_da_stampare)
-			
-			
-			Dumper.binary_dump (printer, "../arff/matrici/"+printer.versione)
-			
-			
-			
 
 if __name__ == "__main__":
 	m = Main ()

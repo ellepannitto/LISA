@@ -20,6 +20,9 @@ def carica_hasher_test ():
 		TT.Token_target.hasher_PoS_sostantivi = Dumper.binary_load("../dump/hasher/PoS_sostantivi.rawobject")
 		TT.Token_target.hasher_PoS = Dumper.binary_load("../dump/hasher/PoS.rawobject")
 		TT.Token_target.hasher_CPoS = Dumper.binary_load("../dump/hasher/CPoS.rawobject")
+		
+		#~ print "lunghezza lista_preposizioni_dopo averli caricati = ", len(TT.Token_target.hasher_preposizioni.dizionario_hash.values())
+		#~ print "lunghezza lista_cluster_dopo averli caricati = ", len (TT.Token_target.hasher_cluster.dizionario_hash.values())
 
 class Converter:
 	
@@ -28,6 +31,7 @@ class Converter:
 
 	def converti_corpus_to_token_target (self, corpus, frequenze_standard, mod="train"):
 		
+		#se siamo in fase di testing ricarico gli stessi hasher usati in fase di train. In questo modo a feature uguali corrisponderanno hash uguali
 		if (mod=="test"):
 			carica_hasher_test()
 		
@@ -81,6 +85,12 @@ class Converter:
 								break
 						
 				m+=1
+		
+		#se mod=test, ricarico gli hasher usati in fase di training
+		# in questo modo evito che le matrici delle feature di training e di testing abbiano un numero di colonne diverso dovuto all'aggiunta di feature da hashare per la fase di testing
+		if (mod=="test"):
+			carica_hasher_test()
+			
 		self.set_liste_possibili_valori ()
 		self.dump_hasher()
 		
@@ -106,6 +116,7 @@ class Converter:
 		TT.Token_target.hasher_PoS_sostantivi.dump("../dump/hasher/PoS_sostantivi")
 		TT.Token_target.hasher_PoS.dump("../dump/hasher/PoS")
 		TT.Token_target.hasher_CPoS.dump("../dump/hasher/CPoS")
+		TT.Token_target.hasher_preposizioni.dump("../dump/hasher/preposizioni")
 		print "[CONVERTER] fine dump hash"
 	
 	def set_liste_possibili_valori (self):
@@ -127,3 +138,6 @@ class Converter:
 		self.lista_di_tutti_i_possibili ["lemmi_antidipendenze"] = TT.Token_target.hasher_lemmi_antidipendenze.dizionario_hash.values()
 		self.lista_di_tutti_i_possibili ["preposizioni"] = TT.Token_target.hasher_preposizioni.dizionario_hash.values()
 		self.lista_di_tutti_i_possibili ["lemmi_dipendenze"] = TT.Token_target.hasher_lemmi_dipendenze.dizionario_hash.values()
+
+		#~ print "lunghezza lista_preposizioni_dopo_il_dump = ", len(TT.Token_target.hasher_preposizioni.dizionario_hash.values())
+		#~ print "lunghezza lista_cluster_dopo_il_dump = ", len (TT.Token_target.hasher_cluster.dizionario_hash.values())

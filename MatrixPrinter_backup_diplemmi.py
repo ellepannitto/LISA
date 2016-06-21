@@ -66,18 +66,22 @@ class MatrixPrinter:
 		
 		return ret
 		
+	#TODO: gestire il fatto che la feature non sia presente in fase di test
+	#DOVREBBE appendere uni. seguirà test più approfondito
 	def recuperaFeature(self, lista_features, istanza):
+		
+		#~ print "chiamato recuperaFeature (",lista_features[0][0][0],")"
 		nome=lista_features[0][0]
 		ret=[]
 		
 		
 		base=getattr(istanza, nome[0])
-		#~ print nome[0], base
+		#~ print "nome:",nome[0], "base:",base
 		for tupla in lista_features:
 
 			nome=tupla[0]
 			f=base
-			#~ print nome, f
+			#~ print "nome:",nome, "f:", f
 			if len(nome)>1:
 
 				if nome[1] not in f:
@@ -89,7 +93,10 @@ class MatrixPrinter:
 							f=0
 						else:
 							f=f[nome[2]]
-
+			
+			#~ print "appendo",f
 			ret.append(f)
-
+			
+		#~ print "restituisco", ret
+		#~ m = raw_input ()
 		return ret
