@@ -6,7 +6,7 @@ import math
 import Hasher as H
 import Dumper
 
-_LIMITE_INFERIORE_FREQUENZE = 100
+
 """
 Alcuni filtri sui lemmi richiedono che la frequenza dello stesso maggiore di questo limite, altrimenti il lemma non è ritenuto significativo e ne viene usato uno fittizio al suo posto
 """
@@ -154,14 +154,7 @@ class Token_target:
 		return self.form
 	
 	def fLemma (self, lemma, pos):
-		#normalizza i nomi comuni
-		if pos == "SP":
-			lemma = "sp"
-		#filtro su frequenza
-		elif lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE:
-		#~ if lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE:
-			lemma = "MISSING_VALUE"	
-		#hash
+		
 		self.lemma = Token_target.hasher_lemmas.hash (lemma)
 
 	def fMorfologia_genere ( self, morfologia ):
@@ -446,9 +439,6 @@ class Token_target:
 		if len(tok.AntiDip)>0:
 			d=tok.AntiDip.keys()[p]
 			lemma = tok.AntiDip[d]['lemma']
-			if lemma!='sp' and (lemma not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[lemma]<_LIMITE_INFERIORE_FREQUENZE):
-				lemma = "MISSING_VALUE"
-				
 			h = lemma
 		else:
 			h = "MISSING_VALUE"
@@ -606,22 +596,10 @@ class Token_target:
 			for d in tok.Dip[el]:
 				lista=d['lemmi']
 				
-				#debug
-				#~ print lista
-				#~ m=raw_input()
 				
 				for l in lista:
 					
-					#debug
-					#~ if l in Token_target.dizionario_filtro:
-						#~ print "frequenza in repubblica:", Token_target.dizionario_filtro[l]
-					#~ else:
-						#~ print "non presente in repubblica"
-
-					if l!="sp" and (l not in Token_target.dizionario_filtro or Token_target.dizionario_filtro[l]<_LIMITE_INFERIORE_FREQUENZE):
-						lemma="MISSING_VALUE"
-					else:
-						lemma=l
+					lemma=l
 					
 					h[Token_target.hasher_lemmi_dipendenze.hash(lemma)]=1
 		self.Dip_lemmi=h
