@@ -5,7 +5,7 @@ layout: "default"
 
 Tesi di Laurea Triennale in Informatica Umanistica
 
-Titolo: **LISA**
+Titolo: **LISA - Light Italian Semantic Analyzer**
 
 Abstract: 
 
