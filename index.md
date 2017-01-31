@@ -3,13 +3,12 @@ author: "Ludovica Pannitto"
 layout: "default"
 ---
 
-## **LISA - un tagger semantico *leggero* per l'italiano**
-Tesi di laurea triennale in Informatica Umanistica - Università di Pisa
+# **LISA - un tagger semantico *leggero* per l'italiano**
+### Tesi di laurea triennale in Informatica Umanistica - Università di Pisa
 
-Relatore: Prof. Alessandro Lenci
+Relatore: Prof. Alessandro Lenci, Correlatore: Dott. Felice dell'Orletta
 
-Correlatore: Dott. Felice dell'Orletta
-
+#### Abstract:
 *Il lavoro ha come oggetto lo sviluppo di un tagger semantico per i nomi italiani. Il task, di SuperSense Tagging, è presentato in letteratura come a metà strada tra un task di Word Sense Disambiguation (WSD) e un task di Named Entity Recognition (NER), e consiste nell’annotare ogni entità in un contesto con la categoria giusta in riferimento ad una certa tassonomia.
 Anche a questo livello fenomeni linguistici come la metonimia introducono notevoli casi di ambiguità (Il tavolo tre chiede il conto - Il cameriere fa accomodare i clienti al tavolo tre).
 La necessità di una classificazione minimale e linguisticamente plausibile, insieme con il desiderio di una classificazione non assoluta del tipo di entità del mondo reale, ma relativa rispetto all’argomento linguistico realizzato dall’entità, ha portato ad elaborare, presso il Laboratorio di Linguistca Computazionale dell’Università di Pisa, la Light Semantic Ontology.
