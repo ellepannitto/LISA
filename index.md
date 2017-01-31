@@ -4,7 +4,7 @@ layout: "default"
 ---
 
 # **LISA - un tagger semantico *leggero* per l'italiano**
-## *Tesi di laurea triennale in Informatica Umanistica - Università di Pisa*
+*Tesi di laurea triennale in Informatica Umanistica - Università di Pisa*
 
 Relatore: Prof. Alessandro Lenci, Correlatore: Dott. Felice dell'Orletta
 
