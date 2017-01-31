@@ -8,6 +8,9 @@ layout: "default"
 
 Relatore: Prof. Alessandro Lenci, Correlatore: Dott. Felice dell'Orletta
 
+Il testo della relazione è disponibile seguendo [questo](http://ellepannitto.github.io/LISA/relazione/ "relazione") link.
+Per una versione più breve, sono disponibili le [slides](http://ellepannitto.github.io/LISA/relazione/ "slides").
+
 #### Abstract:
 Il lavoro ha come oggetto lo sviluppo di un tagger semantico per i nomi italiani. Il task, di SuperSense Tagging, è presentato in letteratura come a metà strada tra un task di Word Sense Disambiguation (WSD) e un task di Named Entity Recognition (NER), e consiste nell’annotare ogni entità in un contesto con la categoria giusta in riferimento ad una certa tassonomia.
 Anche a questo livello fenomeni linguistici come la metonimia introducono notevoli casi di ambiguità (*Il tavolo tre chiede il conto* - *Il cameriere fa accomodare i clienti al tavolo tre*).
@@ -17,7 +20,4 @@ Il task è stato poi affrontato come un task supervisionato di classificazione m
 I risultati mostrano la rilevanza dei vari tipi di informazione utilizzata, in particolare relativamente all'utilizzo di feature che codificano informazione sintattica e semantica.
 Si dimostrano necessarie ulteriori indagini riguardo agli errori prodotti in fase di classificazione e una più ampia esplorazione di altre fonti di informazione da cui ricavare feature diverse rispetto a quelle testate.
 
-La risorsa annotata è disponibile seguendo [questo](http://example.com/ "risosrsa annotata") link
 
-La tesi è disponibile seguendo [questo](http://ellepannitto.github.io/LISA/relazione/relazione.pdf "relazione") link.
-Per una versione più breve, sono disponibili le [slides] (http://ellepannitto.github.io/LISA/relazione/slides.pdf "slides").
