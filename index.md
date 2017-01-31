@@ -5,7 +5,9 @@ layout: "default"
 
 ## **LISA - un tagger semantico *leggero* per l'italiano**
 Tesi di laurea triennale in Informatica Umanistica - Università di Pisa
+
 Relatore: Prof. Alessandro Lenci
+
 Correlatore: Dott. Felice dell'Orletta
 
 *Il lavoro ha come oggetto lo sviluppo di un tagger semantico per i nomi italiani. Il task, di SuperSense Tagging, è presentato in letteratura come a metà strada tra un task di Word Sense Disambiguation (WSD) e un task di Named Entity Recognition (NER), e consiste nell’annotare ogni entità in un contesto con la categoria giusta in riferimento ad una certa tassonomia.
